@@ -118,13 +118,13 @@ void Control(uint8_t mod)
 	// 将角度（0~180°）转换为 CCR 值
 	int  Angle_To_CCR(float angle) 
 		{
-			// 高电平时间范围：0.5ms  2.5ms
-			float pulse_min = 0.5;  // 0° 对应 0.5ms
-			float pulse_max = 2.5;  // 180° 对应 2.5ms
-			float pulse_width = pulse_min + (angle / 180.0) * (pulse_max - pulse_min);
+			// // 高电平时间范围：0.5ms  2.5ms
+			// float pulse_min = 0.5;  // 0° 对应 0.5ms
+			// float pulse_max = 2.5;  // 180° 对应 2.5ms
+			// float pulse_width = pulse_min + (angle / 180.0) * (pulse_max - pulse_min);
 				
-			// 计算 CCR 值：CCR = (pulse_width / 20ms) * (ARR + 1)
-			return (uint32_t)((pulse_width / 20.0) * 20000); // ARR+1 = 19999+1=20000
+			// // 计算 CCR 值：CCR = (pulse_width / 20ms) * (ARR + 1)
+			return 0;//(uint32_t)((pulse_width / 20.0) * 20000); // ARR+1 = 19999+1=20000
 			}		
 			
 void Controlservo(uint8_t mod)//舵机控制函数和自动控制

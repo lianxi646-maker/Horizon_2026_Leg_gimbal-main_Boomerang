@@ -23,7 +23,7 @@ void ServoMove(uint8_t id, uint16_t angle, uint16_t time_ms) {
     };
 
     // 发送数据包
-    HAL_UART_Transmit(&huart3, packet, sizeof(packet), 100);
+    HAL_UART_Transmit(&huart1, packet, sizeof(packet), 100);
 }
 
 // 控制多个舵机（ID数组、角度数组、时间）
@@ -50,6 +50,6 @@ void ServoMoveMulti(uint8_t num_servos, uint8_t *ids, uint16_t *angles, uint16_t
     memcpy(&packet[4], params, sizeof(params));
 
     // 发送数据包
-    HAL_UART_Transmit(&huart3, packet, sizeof(packet), 100);
+    HAL_UART_Transmit(&huart1, packet, sizeof(packet), 100);
 }
 

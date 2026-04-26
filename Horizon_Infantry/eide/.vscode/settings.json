@@ -1,0 +1,3 @@
+{
+  "C_Cpp.default.compileCommands": "${workspaceFolder}/build/Horizon_Infantry/compile_commands.json"
+}

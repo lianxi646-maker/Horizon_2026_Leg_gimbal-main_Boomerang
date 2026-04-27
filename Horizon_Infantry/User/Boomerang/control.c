@@ -193,7 +193,7 @@ void Controlservo(uint8_t mod)//舵机控制函数和自动控制
 		if(third == 1){
 				if(c==1){
 					//使第三发镖与发射导轨垂直
-					ALL_MOTOR.DJI_6020.DATA.Aim = 4095;
+					ALL_MOTOR.DJI_6020.DATA.Aim = 4096;
 					k=3;
 					osDelay(500);
 					ServoMoveMulti(2, ids, angles, time_ms);
@@ -203,7 +203,7 @@ void Controlservo(uint8_t mod)//舵机控制函数和自动控制
 					ServoMoveMulti(2, ids, angles3, time_ms);
 					osDelay(1000);
 					//防止换弹装置影响发射装置
-					ALL_MOTOR.DJI_6020.DATA.Aim = 5460;
+					ALL_MOTOR.DJI_6020.DATA.Aim = 5461;
 					osDelay(500);
 					ServoMoveMulti(2, ids, angles4, time_ms);
 					c=0;
@@ -235,7 +235,7 @@ void Controlservo(uint8_t mod)//舵机控制函数和自动控制
 		if(fifth ==1){
 			if(j ==1){
 				//使第四发镖与发射导轨垂直
-				ALL_MOTOR.DJI_6020.DATA.Aim = 6825;
+				ALL_MOTOR.DJI_6020.DATA.Aim = 6826;
 				k=4;
 				osDelay(500);
 				ServoMoveMulti(2, ids, angles, time_ms);
@@ -245,7 +245,7 @@ void Controlservo(uint8_t mod)//舵机控制函数和自动控制
 				ServoMoveMulti(2, ids, angles3, time_ms);
 				osDelay(1000);
 				//防止换弹装置影响发射装置
-				ALL_MOTOR.DJI_6020.DATA.Aim = 8190;
+				ALL_MOTOR.DJI_6020.DATA.Aim = 8192;
 				osDelay(500);
 				ServoMoveMulti(2, ids, angles4, time_ms);
 				osDelay(500);

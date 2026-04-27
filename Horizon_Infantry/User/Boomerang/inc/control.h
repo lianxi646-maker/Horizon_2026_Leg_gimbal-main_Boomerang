@@ -7,6 +7,7 @@
 // #include "tim.h"
 #include "gpio.h"
 
+extern uint8_t k;
 extern void ALL_Init();
 // 将角度（0~180°）转换为 CCR 值
 extern int pin_switch;

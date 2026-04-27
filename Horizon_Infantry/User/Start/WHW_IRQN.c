@@ -79,12 +79,32 @@ void StartRobotUITask(void const * argument)
     currentTimeRobotUI = xTaskGetTickCount();
 
     for (;;)
-     {//pin_switch = HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_8);
-	// 		if(pin_switch==1){
-	// 			HAL_GPIO_WritePin(GPIOD ,GPIO_PIN_10 ,GPIO_PIN_RESET);
-	// 		}else{
-	// 			HAL_GPIO_WritePin(GPIOD ,GPIO_PIN_10 ,GPIO_PIN_SET);
-	// 		}
+     {
+        pin_switch = HAL_GPIO_ReadPin(GPIOF, GPIO_PIN_0);
+	 		if(pin_switch==1){
+                switch (k)
+                {
+                case 2:
+                    HAL_GPIO_WritePin(GPIOC ,GPIO_PIN_6 ,GPIO_PIN_RESET);
+                    break;
+                case 3:
+                    HAL_GPIO_WritePin(GPIOI ,GPIO_PIN_6 ,GPIO_PIN_RESET);
+                    break;
+                case 4:
+                    HAL_GPIO_WritePin(GPIOI ,GPIO_PIN_7 ,GPIO_PIN_RESET);
+                
+                default:
+                    HAL_GPIO_WritePin(GPIOC ,GPIO_PIN_6 ,GPIO_PIN_SET);
+                    HAL_GPIO_WritePin(GPIOI ,GPIO_PIN_6 ,GPIO_PIN_SET);
+                    HAL_GPIO_WritePin(GPIOI ,GPIO_PIN_7 ,GPIO_PIN_SET);
+                    break;
+                }
+                // if(k=2){
+                //         HAL_GPIO_WritePin(GPIOC ,GPIO_PIN_6 ,GPIO_PIN_RESET);
+                //     }else{
+                //         HAL_GPIO_WritePin(GPIOC ,GPIO_PIN_6 ,GPIO_PIN_SET);
+                //     }
+                }
 			Control(WHW_V_DBUS.Remote.S2_u8);
 //			Control(1);
         osDelay(2);

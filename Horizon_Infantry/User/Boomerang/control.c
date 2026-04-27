@@ -27,6 +27,7 @@ int pin_switch;
 	uint8_t  g = 1;
 	uint8_t  h = 1;
 	uint8_t  j = 1;
+	uint8_t  k = 1;
 	
 	uint8_t  first = 1;
 	uint8_t  second = 0;
@@ -155,6 +156,7 @@ void Controlservo(uint8_t mod)//舵机控制函数和自动控制
 //					__HAL_TIM_SET_COMPARE(&htim12, TIM_CHANNEL_1, Angle_To_CCR(90));//第一发打出
 					//转动六十度使第二发镖与发射导轨垂直
 					ALL_MOTOR.DJI_6020.DATA.Aim = 1365;
+					k=2;
 					osDelay(500);
 					ServoMoveMulti(2, ids, angles, time_ms);
 					osDelay(1000);
@@ -192,6 +194,7 @@ void Controlservo(uint8_t mod)//舵机控制函数和自动控制
 				if(c==1){
 					//使第三发镖与发射导轨垂直
 					ALL_MOTOR.DJI_6020.DATA.Aim = 4095;
+					k=3;
 					osDelay(500);
 					ServoMoveMulti(2, ids, angles, time_ms);
 					osDelay(1000);
@@ -233,6 +236,7 @@ void Controlservo(uint8_t mod)//舵机控制函数和自动控制
 			if(j ==1){
 				//使第四发镖与发射导轨垂直
 				ALL_MOTOR.DJI_6020.DATA.Aim = 6825;
+				k=4;
 				osDelay(500);
 				ServoMoveMulti(2, ids, angles, time_ms);
 				osDelay(1000);

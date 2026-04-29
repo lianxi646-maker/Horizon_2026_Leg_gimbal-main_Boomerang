@@ -9,14 +9,14 @@
 
 
 int pin_switch;
-	uint8_t ids[] = {1, 2};          // 舵机ID列表
-	uint16_t angles[] = {450, 700}; // 初始
-	uint16_t angles2[] = {500, 630};
-	uint16_t angles3[] = {2000, 600};	// 目标
-	uint16_t angles4[] = {730, 600};	// 等待位置
-	uint16_t angles5[] = {500, 650};
-	uint16_t angles6[] = {500,630};
-	uint16_t angles7[] = {450,713};
+	uint8_t ids[] = {1, 2, 3};          // 舵机ID列表
+	uint16_t angles[] = {450, 700, 800}; // 初始
+	uint16_t angles2[] = {500, 630, 730};
+	uint16_t angles3[] = {2000, 600, 700};	// 目标
+	uint16_t angles4[] = {730, 600, 700};	// 等待位置
+	uint16_t angles5[] = {500, 650, 750};
+	uint16_t angles6[] = {500,630, 730};
+	//uint16_t angles7[] = {450,713};
 	uint16_t time_ms = 1000; 
 	uint8_t  b = 1;
 	uint8_t  a = 1;
@@ -119,13 +119,13 @@ void Control(uint8_t mod)
 	// 将角度（0~180°）转换为 CCR 值
 	int  Angle_To_CCR(float angle) 
 		{
-			// // 高电平时间范围：0.5ms  2.5ms
-			// float pulse_min = 0.5;  // 0° 对应 0.5ms
-			// float pulse_max = 2.5;  // 180° 对应 2.5ms
-			// float pulse_width = pulse_min + (angle / 180.0) * (pulse_max - pulse_min);
+			 // 高电平时间范围：0.5ms  2.5ms
+			 float pulse_min = 0.5;  // 0° 对应 0.5ms
+			 float pulse_max = 2.5;  // 180° 对应 2.5ms
+			 float pulse_width = pulse_min + (angle / 180.0) * (pulse_max - pulse_min);
 				
-			// // 计算 CCR 值：CCR = (pulse_width / 20ms) * (ARR + 1)
-			return 0;//(uint32_t)((pulse_width / 20.0) * 20000); // ARR+1 = 19999+1=20000
+			 // 计算 CCR 值：CCR = (pulse_width / 20ms) * (ARR + 1)
+			return (uint32_t)((pulse_width / 20.0) * 20000); // ARR+1 = 19999+1=20000
 			}		
 			
 void Controlservo(uint8_t mod)//舵机控制函数和自动控制
@@ -151,23 +151,23 @@ void Controlservo(uint8_t mod)//舵机控制函数和自动控制
 					ALL_MOTOR.DJI_3508_Pull.DATA.Aim +=445000;
 					}
 					osDelay(2000);
-//					__HAL_TIM_SET_COMPARE(&htim12, TIM_CHANNEL_1, Angle_To_CCR(150));
+					__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, Angle_To_CCR(150));
 					osDelay(1000);
-//					__HAL_TIM_SET_COMPARE(&htim12, TIM_CHANNEL_1, Angle_To_CCR(90));//第一发打出
+					__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, Angle_To_CCR(90));//第一发打出
 					//转动六十度使第二发镖与发射导轨垂直
 					ALL_MOTOR.DJI_6020.DATA.Aim = 1365;
 					k=2;
 					osDelay(500);
-					ServoMoveMulti(2, ids, angles, time_ms);
-					osDelay(1000);
-					ServoMoveMulti(2, ids, angles2, time_ms);
-					osDelay(1000);
-					ServoMoveMulti(2, ids, angles3, time_ms);
-					osDelay(1000);
-					//再次转动六十度防止换弹装置影响发射装置
-					ALL_MOTOR.DJI_6020.DATA.Aim = 2730;
-					osDelay(500);
-					ServoMoveMulti(2, ids, angles4, time_ms);
+					ServoMoveMulti(3, ids, angles, time_ms);
+					// osDelay(500);
+					// ServoMoveMulti(2, ids, angles2, time_ms);
+					// osDelay(1000);
+					// ServoMoveMulti(2, ids, angles3, time_ms);
+					// osDelay(1000);
+					// //再次转动六十度防止换弹装置影响发射装置
+					// ALL_MOTOR.DJI_6020.DATA.Aim = 2730;
+					// osDelay(500);
+					// ServoMoveMulti(2, ids, angles4, time_ms);
 					second = 1;
 					first=0;
 				}
@@ -181,10 +181,15 @@ void Controlservo(uint8_t mod)//舵机控制函数和自动控制
 					b = 0;
 					ALL_MOTOR.DJI_3508_Pull.DATA.Aim +=445000;
 					}
+					osDelay(500);
+					//再次转动六十度防止换弹装置影响发射装置
+					ALL_MOTOR.DJI_6020.DATA.Aim = 2730;
+					//osDelay(500);
+					ServoMoveMulti(3, ids, angles2, time_ms);
 					osDelay(2000);
-//					__HAL_TIM_SET_COMPARE(&htim12, TIM_CHANNEL_1, Angle_To_CCR(150));
+					__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, Angle_To_CCR(150));
 					osDelay(1000);
-//				__HAL_TIM_SET_COMPARE(&htim12, TIM_CHANNEL_1, Angle_To_CCR(90));//第二发打出
+				__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, Angle_To_CCR(90));//第二发打出
 					second =0;
 					third = 1;
 				}
@@ -196,16 +201,16 @@ void Controlservo(uint8_t mod)//舵机控制函数和自动控制
 					ALL_MOTOR.DJI_6020.DATA.Aim = 4096;
 					k=3;
 					osDelay(500);
-					ServoMoveMulti(2, ids, angles, time_ms);
-					osDelay(1000);
-					ServoMoveMulti(2, ids, angles2, time_ms);
-					osDelay(1000);
-					ServoMoveMulti(2, ids, angles3, time_ms);
-					osDelay(1000);
-					//防止换弹装置影响发射装置
-					ALL_MOTOR.DJI_6020.DATA.Aim = 5461;
-					osDelay(500);
-					ServoMoveMulti(2, ids, angles4, time_ms);
+					ServoMoveMulti(3, ids, angles3, time_ms);
+					// osDelay(1000);
+					// ServoMoveMulti(2, ids, angles2, time_ms);
+					// osDelay(1000);
+					// ServoMoveMulti(2, ids, angles3, time_ms);
+					// osDelay(1000);
+					// //防止换弹装置影响发射装置
+					// ALL_MOTOR.DJI_6020.DATA.Aim = 5461;
+					// osDelay(500);
+					// ServoMoveMulti(2, ids, angles4, time_ms);
 					c=0;
 				}
 				ALL_MOTOR.DJI_3508_Pull.DATA.Aim -=0.5;
@@ -215,6 +220,11 @@ void Controlservo(uint8_t mod)//舵机控制函数和自动控制
 					d = 0;
 					ALL_MOTOR.DJI_3508_Pull.DATA.Aim +=445000;//第三发装完
 					}
+					osDelay(500);
+					//防止换弹装置影响发射装置
+					ALL_MOTOR.DJI_6020.DATA.Aim = 5461;
+					//osDelay(500);
+					ServoMoveMulti(3, ids, angles4, time_ms);
 				third = 0;
 				forth  = 1;
 				}
@@ -225,9 +235,9 @@ void Controlservo(uint8_t mod)//舵机控制函数和自动控制
 	}else if(mod == 1){//第三发和第四发
 		
 		if(forth ==1){
-//				__HAL_TIM_SET_COMPARE(&htim12, TIM_CHANNEL_1, Angle_To_CCR(150));
+				__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, Angle_To_CCR(150));
 				osDelay(1000);
-//				__HAL_TIM_SET_COMPARE(&htim12, TIM_CHANNEL_1, Angle_To_CCR(90));//第三发打出
+				__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, Angle_To_CCR(90));//第三发打出
 				osDelay(500);
 			forth =0;
 			fifth = 1;
@@ -238,17 +248,17 @@ void Controlservo(uint8_t mod)//舵机控制函数和自动控制
 				ALL_MOTOR.DJI_6020.DATA.Aim = 6826;
 				k=4;
 				osDelay(500);
-				ServoMoveMulti(2, ids, angles, time_ms);
-				osDelay(1000);
-				ServoMoveMulti(2, ids, angles6, time_ms);
-				osDelay(1000);
-				ServoMoveMulti(2, ids, angles3, time_ms);
-				osDelay(1000);
-				//防止换弹装置影响发射装置
-				ALL_MOTOR.DJI_6020.DATA.Aim = 8192;
-				osDelay(500);
-				ServoMoveMulti(2, ids, angles4, time_ms);
-				osDelay(500);
+				ServoMoveMulti(3, ids, angles5, time_ms);
+				// osDelay(1000);
+				// ServoMoveMulti(2, ids, angles6, time_ms);
+				// osDelay(1000);
+				// ServoMoveMulti(2, ids, angles3, time_ms);
+				// osDelay(1000);
+				// //防止换弹装置影响发射装置
+				// ALL_MOTOR.DJI_6020.DATA.Aim = 8192;
+				// osDelay(500);
+				// ServoMoveMulti(2, ids, angles4, time_ms);
+				// osDelay(500);
 				j =0;
 			}
 			ALL_MOTOR.DJI_3508_Pull.DATA.Aim -=0.5;
@@ -258,10 +268,15 @@ void Controlservo(uint8_t mod)//舵机控制函数和自动控制
 					h = 0;
 					ALL_MOTOR.DJI_3508_Pull.DATA.Aim +=445000;//第四发装填完成
 					}
+					//防止换弹装置影响发射装置
+					osDelay(500);
+					ALL_MOTOR.DJI_6020.DATA.Aim = 8192;
+					//osDelay(500);
+					ServoMoveMulti(3, ids, angles6, time_ms);
 					osDelay(2000);
-//					__HAL_TIM_SET_COMPARE(&htim12, TIM_CHANNEL_1, Angle_To_CCR(150));
+					__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, Angle_To_CCR(150));
 					osDelay(1000);
-//					__HAL_TIM_SET_COMPARE(&htim12, TIM_CHANNEL_1, Angle_To_CCR(90));//第四发打出
+					__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, Angle_To_CCR(90));//第四发打出
 					osDelay(500);
 				}
 		}

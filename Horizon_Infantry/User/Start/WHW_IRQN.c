@@ -104,6 +104,10 @@ void StartRobotUITask(void const * argument)
                 //     }else{
                 //         HAL_GPIO_WritePin(GPIOC ,GPIO_PIN_6 ,GPIO_PIN_SET);
                 //     }
+                }else{
+                    HAL_GPIO_WritePin(GPIOC ,GPIO_PIN_6 ,GPIO_PIN_SET);
+                    HAL_GPIO_WritePin(GPIOI ,GPIO_PIN_6 ,GPIO_PIN_SET);
+                    HAL_GPIO_WritePin(GPIOI ,GPIO_PIN_7 ,GPIO_PIN_SET);
                 }
 			Control(WHW_V_DBUS.Remote.S2_u8);
 //			Control(1);

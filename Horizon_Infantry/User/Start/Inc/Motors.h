@@ -10,6 +10,7 @@ typedef struct
 		DJI_MOTOR_Typedef DJI_2006_Yaw;
 		DJI_MOTOR_Typedef DJI_3508_Pull;
 		DJI_MOTOR_Typedef DJI_6020;
+        DJI_MOTOR_Typedef DJI_3510;
 }MOTOR_Typedef;
 
 typedef struct

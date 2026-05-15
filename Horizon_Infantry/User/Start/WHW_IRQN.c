@@ -80,36 +80,39 @@ void StartRobotUITask(void const * argument)
 
     for (;;)
      {
-        pin_switch = HAL_GPIO_ReadPin(GPIOF, GPIO_PIN_0);
-	 		if(pin_switch==1){
-                switch (k)
-                {
-                case 2:
-                    HAL_GPIO_WritePin(GPIOC ,GPIO_PIN_6 ,GPIO_PIN_RESET);
-                    break;
-                case 3:
-                    HAL_GPIO_WritePin(GPIOI ,GPIO_PIN_6 ,GPIO_PIN_RESET);
-                    break;
-                case 4:
-                    HAL_GPIO_WritePin(GPIOI ,GPIO_PIN_7 ,GPIO_PIN_RESET);
+        RUI_V_CONTAL.DWT_TIME.RobotUI_Dtime = DWT_GetDeltaT(&RUI_V_CONTAL.DWT_TIME.RobotUI_DWT_Count);
+        pin_switch_down = HAL_GPIO_ReadPin(GPIOF, GPIO_PIN_0);
+        pin_switch_up = HAL_GPIO_ReadPin(GPIOF, GPIO_PIN_1);
+	 		// if(pin_switch_down == 0){
+            //     switch (k)
+            //     {
+            //     case 2:
+            //         HAL_GPIO_WritePin(GPIOC ,GPIO_PIN_6 ,GPIO_PIN_RESET);
+            //         break;
+            //     case 3:
+            //         HAL_GPIO_WritePin(GPIOI ,GPIO_PIN_6 ,GPIO_PIN_RESET);
+            //         break;
+            //     case 4:
+            //         HAL_GPIO_WritePin(GPIOI ,GPIO_PIN_7 ,GPIO_PIN_RESET);
                 
-                default:
-                    HAL_GPIO_WritePin(GPIOC ,GPIO_PIN_6 ,GPIO_PIN_SET);
-                    HAL_GPIO_WritePin(GPIOI ,GPIO_PIN_6 ,GPIO_PIN_SET);
-                    HAL_GPIO_WritePin(GPIOI ,GPIO_PIN_7 ,GPIO_PIN_SET);
-                    break;
-                }
-                // if(k=2){
-                //         HAL_GPIO_WritePin(GPIOC ,GPIO_PIN_6 ,GPIO_PIN_RESET);
-                //     }else{
-                //         HAL_GPIO_WritePin(GPIOC ,GPIO_PIN_6 ,GPIO_PIN_SET);
-                //     }
-                }else{
-                    HAL_GPIO_WritePin(GPIOC ,GPIO_PIN_6 ,GPIO_PIN_SET);
-                    HAL_GPIO_WritePin(GPIOI ,GPIO_PIN_6 ,GPIO_PIN_SET);
-                    HAL_GPIO_WritePin(GPIOI ,GPIO_PIN_7 ,GPIO_PIN_SET);
-                }
-			Control(WHW_V_DBUS.Remote.S2_u8);
+            //     default:
+            //         HAL_GPIO_WritePin(GPIOC ,GPIO_PIN_6 ,GPIO_PIN_SET);
+            //         HAL_GPIO_WritePin(GPIOI ,GPIO_PIN_6 ,GPIO_PIN_SET);
+            //         HAL_GPIO_WritePin(GPIOI ,GPIO_PIN_7 ,GPIO_PIN_SET);
+            //         break;
+            //     }
+            //     // if(k=2){
+            //     //         HAL_GPIO_WritePin(GPIOC ,GPIO_PIN_6 ,GPIO_PIN_RESET);
+            //     //     }else{
+            //     //         HAL_GPIO_WritePin(GPIOC ,GPIO_PIN_6 ,GPIO_PIN_SET);
+            //     //     }
+            //     }else{
+            //         HAL_GPIO_WritePin(GPIOC ,GPIO_PIN_6 ,GPIO_PIN_SET);
+            //         HAL_GPIO_WritePin(GPIOI ,GPIO_PIN_6 ,GPIO_PIN_SET);
+            //         HAL_GPIO_WritePin(GPIOI ,GPIO_PIN_7 ,GPIO_PIN_SET);
+            //     }
+			Control_Referee( User_data);
+            // Controlservo(WHW_V_DBUS.Remote.S1_u8);
 //			Control(1);
         osDelay(2);
     }
@@ -123,7 +126,7 @@ void StartMoveTask(void const * argument)
 
     for (;;)
     {
-        Controlservo(WHW_V_DBUS.Remote.S1_u8);
+        //Controlservo(WHW_V_DBUS.Remote.S1_u8);
         osDelay(2);
     }
 }
@@ -221,6 +224,8 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef* hcan)
 			
 			
 		}
+        RUI_F_MOTOR_CAN_RX_3508RM(&ALL_MOTOR.DJI_3510.DATA, rx_data);
+        memcpy(test, rx_data, 8);
 	}
 	if (hcan == &hcan2)
 	{
@@ -273,6 +278,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 
 void BSP_UART_IRQHandler(UART_HandleTypeDef *huart)
 {
+	uint8_t *pData = huart->pRxBuffPtr;
     if(huart->Instance ==USART3)//遥控接收串口
     {
         if (RESET != __HAL_UART_GET_FLAG(&huart3, UART_FLAG_IDLE))
@@ -294,19 +300,10 @@ void BSP_UART_IRQHandler(UART_HandleTypeDef *huart)
 
     if(huart->Instance ==USART6)//裁判系统串口
     {
-		uint8_t data_length_6;
-        if (RESET != __HAL_UART_GET_FLAG(&huart6, UART_FLAG_IDLE))
-        {
-            __HAL_UART_CLEAR_IDLEFLAG(&huart6);  //清除空闲中断标志（否则会一直不断进入中断）
-            // 下面进行空闲中断相关处理
-            HAL_UART_DMAStop(&huart6);//暂时停止本次DMA传输，进行数据处理
-            
-            data_length_6  = BUFFER_SIZE_6 - __HAL_DMA_GET_COUNTER(&hdma_usart6_rx);//计算接收到的数据长度
-		    Read_Data_first(&ALL_RX , &User_data , data_length_6);//测试函数：待修改
-		    memset((uint8_t*)ALL_RX.Data,0,data_length_6);//清零接收缓冲区
-
-            HAL_UART_Receive_DMA(&huart6,(uint8_t *)ALL_RX.Data,255);  //重启开始DMA传输
-        }
+				uint8_t *next_buf = (pData == Referee_Rx_Buf[0]) ? Referee_Rx_Buf[1] : Referee_Rx_Buf[0];
+        HAL_UARTEx_ReceiveToIdle_DMA(huart, next_buf, REFEREE_RXFRAME_LENGTH);
+        __HAL_DMA_DISABLE_IT(huart1.hdmarx, DMA_IT_HT);//关闭 DMA 半传中断
+        Referee_System_Frame_Update(pData,256);
     }
 
     if(huart->Instance ==USART1)//调试串口

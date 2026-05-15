@@ -38,7 +38,6 @@ extern uint8_t DBUS_RX_DATA[19];
 extern DBUS_Typedef WHW_V_DBUS;
 extern CONTAL_Typedef RUI_V_CONTAL;
 
-extern ALL_RX_Data_T ALL_RX;
 extern User_Data_T User_data;
 
 extern uint8_t RX[20];

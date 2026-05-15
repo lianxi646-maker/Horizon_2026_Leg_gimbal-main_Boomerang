@@ -33,6 +33,7 @@
 /* USER CODE BEGIN Includes */
 #include "chassisL.h"
 #include "control.h"
+#include "ALL_Init.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -112,7 +113,11 @@ int main(void)
   MX_SPI2_Init();
   MX_TIM1_Init();
   /* USER CODE BEGIN 2 */
+  //初始化整体框架
+  Everying_Init();
+  //扳机舵机PWM初始化
   HAL_TIM_PWM_Start(&htim1,TIM_CHANNEL_1);
+  //初始化扳机位置
   __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, Angle_To_CCR(90));
   /* USER CODE END 2 */
 

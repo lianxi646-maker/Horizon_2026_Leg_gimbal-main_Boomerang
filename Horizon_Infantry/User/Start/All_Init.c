@@ -41,7 +41,7 @@ uint8_t DBUS_RX_DATA[19] = { 0 };
 DBUS_Typedef WHW_V_DBUS = { 0 };
 
 //裁判系统相关变量
-ALL_RX_Data_T ALL_RX;
+uint8_t Referee_Rx_Buf[2][REFEREE_RXFRAME_LENGTH];
 User_Data_T User_data;
 
 //测试
@@ -111,8 +111,8 @@ void Everying_Init(void)
     HAL_DMA_Init(&hdma_usart6_rx);
     HAL_DMA_Init(&hdma_usart6_tx);
     HAL_UART_DMAStop(&huart6);
-    __HAL_UART_ENABLE_IT(&huart6, UART_IT_IDLE);//裁判系统串口
-    HAL_UART_Receive_DMA(&huart6,(uint8_t *)ALL_RX.Data,255);
+    HAL_UARTEx_ReceiveToIdle_DMA(&huart6, Referee_Rx_Buf[0], REFEREE_RXFRAME_LENGTH);
+        __HAL_DMA_DISABLE_IT(huart1.hdmarx, DMA_IT_HT);//关闭 DMA 半传中断
 	
 	//USB初始化
 	MX_USB_DEVICE_Init();

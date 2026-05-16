@@ -148,21 +148,22 @@ void Control_Referee( User_Data_T User_data)
 			{
 				case 0:
 					osDelay(5000);
-					state = 2;
-					break;
-				case 2:
-					Controlservo(state, User_data);
-					if(second == 1){
-						state = 2;
-					}else if(second == 0){
-						state = 1;
-					}
+					state = 1;
 					break;
 				case 1:
 					Controlservo(state, User_data);
+					if(second == 1){
+						state = 1;
+					}else if(second == 0){
+						state = 2;
+					}
+					break;
+				case 2:
+					Controlservo(state, User_data);
 					break;
 			}
-			
+		default:
+			break;	
 	}
 	
 }
@@ -177,7 +178,7 @@ void Controlservo(uint8_t mod, User_Data_T User_data)//舵机控制函数和自动控制
 //		return ;
 //	}
 	
-		if(mod == 2){//第一发和第二发
+		if(mod == 1){//第一发和第二发
 
 			//初始化6020位置
 			ALL_MOTOR.DJI_6020.DATA.Aim = 0;
@@ -229,28 +230,30 @@ void Controlservo(uint8_t mod, User_Data_T User_data)//舵机控制函数和自动控制
 					osDelay(25);
 					//第二发装填完成
 					HAL_GPIO_WritePin(GPIOC ,GPIO_PIN_6 ,GPIO_PIN_RESET);
-					osDelay(50);
+					osDelay(300);
 					if(pin_switch_up == 1){
 					ALL_MOTOR.DJI_3508_Pull.DATA.Aim +=2.0;
+					}else if(User_data.dart_info.dart_remaining_time <= 4){
+
 					}else if(pin_switch_up == 0){
 						osDelay(25);
 						//再次转动六十度防止换弹装置影响发射装置
 						ALL_MOTOR.DJI_6020.DATA.Aim = 2730;
 						//osDelay(500);
-						ServoMoveMulti(3, ids, angles2, time_ms);
+						//ServoMoveMulti(3, ids, angles2, time_ms);
 						osDelay(100);
 						__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, Angle_To_CCR(150));
 						osDelay(50);
 					__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, Angle_To_CCR(90));//第二发打出
 					//使第三发镖与发射导轨垂直
 						ALL_MOTOR.DJI_6020.DATA.Aim = 4096;
-						ServoMoveMulti(3, ids, angles3, time_ms);
+						ServoMoveMulti(3, ids, angles2, time_ms);
 						second =0;
 						third = 1;
 					}
 				}
 			}
-		}else if(mod == 1){//第三发和第四发
+		}else if(mod == 2){//第三发和第四发
 			if(third == 1){
 					if(pin_switch_down == 1){
 					ALL_MOTOR.DJI_3508_Pull.DATA.Aim -=0.5;
@@ -258,22 +261,24 @@ void Controlservo(uint8_t mod, User_Data_T User_data)//舵机控制函数和自动控制
 					osDelay(25);
 					//第三发装填完成
 					HAL_GPIO_WritePin(GPIOI ,GPIO_PIN_6 ,GPIO_PIN_RESET);
-					osDelay(50);
+					osDelay(300);
 					if(pin_switch_up == 1){
 					ALL_MOTOR.DJI_3508_Pull.DATA.Aim +=2.0;
+					}else if(User_data.dart_info.dart_remaining_time <= 4){
+
 					}else if(pin_switch_up == 0){
 						osDelay(25);
 						//再次转动六十度防止换弹装置影响发射装置
 						ALL_MOTOR.DJI_6020.DATA.Aim = 5461;
 						//osDelay(500);
-						//ServoMoveMulti(3, ids, angles2, time_ms);
+						//ServoMoveMulti(3, ids, angles3, time_ms);
 						osDelay(100);
 						__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, Angle_To_CCR(150));
 						osDelay(50);
 					__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, Angle_To_CCR(90));//第三发打出
 					//使第四发镖与发射导轨垂直
 					ALL_MOTOR.DJI_6020.DATA.Aim = 6826;
-					ServoMoveMulti(3, ids, angles5, time_ms);
+					ServoMoveMulti(3, ids, angles3, time_ms);
 						third =0;
 						forth = 1;
 					}
@@ -287,15 +292,17 @@ void Controlservo(uint8_t mod, User_Data_T User_data)//舵机控制函数和自动控制
 					osDelay(25);
 					//第四发装填完成
 					HAL_GPIO_WritePin(GPIOI ,GPIO_PIN_7 ,GPIO_PIN_RESET);
-					osDelay(50);
+					osDelay(300);
 					if(pin_switch_up == 1){
 					ALL_MOTOR.DJI_3508_Pull.DATA.Aim +=2.0;
+					}else if(User_data.dart_info.dart_remaining_time <= 4){
+
 					}else if(pin_switch_up == 0){
 						osDelay(25);
 						//再次转动六十度防止换弹装置影响发射装置
 						ALL_MOTOR.DJI_6020.DATA.Aim = 8192;
 						//osDelay(500);
-						//ServoMoveMulti(3, ids, angles2, time_ms);
+						//ServoMoveMulti(3, ids, angles5, time_ms);
 						osDelay(100);
 						__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, Angle_To_CCR(150));
 						osDelay(50);

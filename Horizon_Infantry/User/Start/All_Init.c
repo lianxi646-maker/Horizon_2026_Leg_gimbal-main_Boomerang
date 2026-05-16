@@ -123,6 +123,9 @@ void Everying_Init(void)
     TIM4->CCR3 = 0;
 
     MOTOR_PID_Gimbal_INIT(&ALL_MOTOR);
+    
+    //扳机舵机PWM初始化
+    HAL_TIM_PWM_Start(&htim1,TIM_CHANNEL_1);
 }
 
 void StartDefaultTask(void const * argument)

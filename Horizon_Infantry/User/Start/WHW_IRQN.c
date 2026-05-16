@@ -67,6 +67,7 @@
 #include "get_K.h"
 #include "Gimbal_Task.h"
 #include "control.h"
+#include "vision.h"
 
 uint8_t move_G, move_S, move_C, move_P;
 float t1,t2,dt;
@@ -111,9 +112,10 @@ void StartRobotUITask(void const * argument)
             //         HAL_GPIO_WritePin(GPIOI ,GPIO_PIN_6 ,GPIO_PIN_SET);
             //         HAL_GPIO_WritePin(GPIOI ,GPIO_PIN_7 ,GPIO_PIN_SET);
             //     }
-			Control_Referee( User_data);
+			//Control_Referee( User_data);
             // Controlservo(WHW_V_DBUS.Remote.S1_u8);
 //			Control(1);
+            Control(WHW_V_DBUS.Remote.S2_u8);
         osDelay(2);
     }
 }
@@ -126,7 +128,8 @@ void StartMoveTask(void const * argument)
 
     for (;;)
     {
-        //Controlservo(WHW_V_DBUS.Remote.S1_u8);
+        Vision_Tx_Data(User_data.dart_info.dart_selected_target);
+        // VOFA_justfloat(1.0, 0,0,0,0,0,0,0,0,0);
         osDelay(2);
     }
 }
@@ -182,7 +185,8 @@ void StartRootTask(void const * argument)
 
     for(;;)
     {
-        osDelay(5);
+        VisionRxData.Data.isOnline=vision_offline();
+        osDelay(1);
     }
 }
 

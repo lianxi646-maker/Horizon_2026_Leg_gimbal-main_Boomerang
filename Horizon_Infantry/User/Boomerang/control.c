@@ -72,11 +72,12 @@ uint8_t shoot=0;
 void Control(uint8_t mod)
 {
 	if(mod == 1)
-	{//视觉标定
-		// ProcessReceivedData();
+	{
+		Control_Referee( User_data);
 	}else if(mod == 2)
-		{
-	
+	{
+	//视觉标定
+		// ProcessReceivedData();
 	}else if(mod == 3)
 	{//手动模式射击		
 		ALL_MOTOR.DJI_2006_Trigger.DATA.Aim -= WHW_V_DBUS.Remote.CH3_int16 * 3.0f;
@@ -147,7 +148,7 @@ void Control_Referee( User_Data_T User_data)
 			switch(state)
 			{
 				case 0:
-					osDelay(5000);
+					osDelay(7000);
 					state = 1;
 					break;
 				case 1:
@@ -180,11 +181,19 @@ void Controlservo(uint8_t mod, User_Data_T User_data)//舵机控制函数和自动控制
 	
 		if(mod == 1){//第一发和第二发
 
-			//初始化6020位置
-			ALL_MOTOR.DJI_6020.DATA.Aim = 0;
-			//初始化舵机位置
-			ServoMoveMulti(3, ids, angles, time_ms);
+			
 			if(first==1){
+				//视觉标定
+				if(VisionRxData.Data.x0>50){
+					ALL_MOTOR.DJI_2006_Yaw.DATA.Aim -= 2.0;
+				}else if(VisionRxData.Data.x0<-50){
+					ALL_MOTOR.DJI_2006_Yaw.DATA.Aim += 2.0;
+				}
+				//初始化6020位置
+				ALL_MOTOR.DJI_6020.DATA.Aim = 0;
+				//初始化舵机位置
+				ServoMoveMulti(3, ids, angles, time_ms);
+				__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, Angle_To_CCR(90));
 				if(pin_switch_down == 1){
 					ALL_MOTOR.DJI_3508_Pull.DATA.Aim -=0.5;
 				}else if(pin_switch_down == 0){
@@ -255,7 +264,13 @@ void Controlservo(uint8_t mod, User_Data_T User_data)//舵机控制函数和自动控制
 			}
 		}else if(mod == 2){//第三发和第四发
 			if(third == 1){
-					if(pin_switch_down == 1){
+				//视觉标定
+				if(VisionRxData.Data.x0>50){
+					ALL_MOTOR.DJI_2006_Yaw.DATA.Aim -= 2.0;
+				}else if(VisionRxData.Data.x0<-50){
+					ALL_MOTOR.DJI_2006_Yaw.DATA.Aim += 2.0;
+				}
+				if(pin_switch_down == 1){
 					ALL_MOTOR.DJI_3508_Pull.DATA.Aim -=0.5;
 				}else if(pin_switch_down == 0){
 					osDelay(25);

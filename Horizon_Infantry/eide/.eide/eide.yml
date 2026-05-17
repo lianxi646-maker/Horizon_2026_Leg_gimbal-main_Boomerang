@@ -91,6 +91,8 @@ virtualFolder:
         - path: ../User/App/inc/RUI_ROOT_INIT.h
         - path: ../User/App/Shoot_Task.c
         - path: ../User/App/inc/Shoot_Task.h
+        - path: ../User/App/Boomerang_task.c
+        - path: ../User/App/inc/Boomerang_task.h
       folders: []
     - name: Start
       files:
@@ -166,7 +168,6 @@ virtualFolder:
             - path: ../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_exti.c
             - path: ../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc.c
             - path: ../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_adc_ex.c
-            - path: ../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_adc.c
             - path: ../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c
             - path: ../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_crc.c
             - path: ../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_spi.c
@@ -311,9 +312,9 @@ targets:
         - ../Middlewares/SEGGER_RTT/Config
         - ../Middlewares/SEGGER_RTT/RTT
         - ../User/Leg/inc
+        - ../User/Boomerang/inc
         - .cmsis/include
         - ../MDK-ARM/RTE/_Horizon_Infantry
-        - ../User/Boomerang/inc
       libList: []
     excludeList: []
     settings: {}

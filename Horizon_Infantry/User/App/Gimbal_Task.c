@@ -8,10 +8,38 @@
 
 uint8_t MOTOR_PID_Gimbal_INIT(MOTOR_Typedef *motor)
 {
+    float PID_P_Pull[3] = {   0.1f,   0.0f,   0.0f   };
+    float PID_S_Pull[3] = {   5.0f,   0.0f,   2.0f  };
+	PID_init(&ALL_MOTOR.DJI_3508_Pull.PID_P, PID_POSITION,PID_P_Pull, 10000, 0);//拉簧角度环
+	PID_init(&ALL_MOTOR.DJI_3508_Pull.PID_S, PID_POSITION,PID_S_Pull, 28000, 0);//拉簧速度环
+	
+		float PID_P_Trigger[3] = {   0.1f,   0.0f,   0.0f   };
+    float PID_S_Trigger[3] = {   10.0f,   0.0f,   5.0f  };
+	
+	PID_init(&ALL_MOTOR.DJI_2006_Trigger.PID_P, PID_POSITION,PID_P_Trigger, 10000, 0);//扳机角度环
+	PID_init(&ALL_MOTOR.DJI_2006_Trigger.PID_S, PID_POSITION,PID_S_Trigger, 7000, 0);//扳机速度环
+	
+		float PID_P_Yaw[3] = {   0.2f,   0.0f,   0.0f   };
+    float PID_S_Yaw[3] = {   2.0f,   0.0f,   1.0f  };
+	
+	PID_init(&ALL_MOTOR.DJI_2006_Yaw.PID_P, PID_POSITION,PID_P_Yaw, 10000, 0);//YAW轴角度环
+	PID_init(&ALL_MOTOR.DJI_2006_Yaw.PID_S, PID_POSITION,PID_S_Yaw, 15000, 0);//YAW轴速度环	
+
+	float PID_P_6020_Yaw[3] = {   3.0f,   0.0f,   0.0f   };
+	float PID_S_6020_Yaw[3] = {   5.0f,   0.1f,   2.0f  };
+
+	PID_init(&ALL_MOTOR.DJI_6020_Yaw.PID_P, PID_POSITION,PID_P_6020_Yaw, 200, 0);//6020角度环
+	PID_init(&ALL_MOTOR.DJI_6020_Yaw.PID_S, PID_POSITION,PID_S_6020_Yaw, 10000, 0);//6020速度环
+
+	float PID_P_6020_turn[3] = {   3.0f,   0.0f,   0.0f   };
+	float PID_S_6020_turn[3] = {   5.0f,   0.1f,   2.0f  };
+
+	PID_init(&ALL_MOTOR.DJI_6020_turn.PID_P, PID_POSITION,PID_P_6020_turn, 200, 0);//6020角度环
+	PID_init(&ALL_MOTOR.DJI_6020_turn.PID_S, PID_POSITION,PID_S_6020_turn, 10000, 0);//6020速度环
 //    float PID_S_Pitch[3] = {15.0f, 0.0f, 0.0f};
 //    float PID_P_Pitch[3] = {15.0f, 0.0f, 0.0f};
 
-//    PID_Init(&motor->DM4310_Pitch.PID_S, 10000.0f, 0.0f, 
+    //PID_Init(&motor->DM4310_Pitch.PID_S, 10000.0f, 0.0f, 
 //              PID_S_Pitch, 0.0f, 0.0f, 
 //              0.0f, 0.0f, 0, 
 //              Integral_Limit);

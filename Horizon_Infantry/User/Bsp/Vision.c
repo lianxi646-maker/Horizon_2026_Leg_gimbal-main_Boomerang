@@ -8,15 +8,17 @@ void Vision_Rx_Data(uint8_t* buffer, VisionRxDataUnion *VisionRx)
     VisionRx->Data.OffCounter = 1;
     uint8_t i = 0;
     //获取头帧
-    VisionRx->Data.Head_frame[0] = buffer[i++];
-    VisionRx->Data.Head_frame[1] = buffer[i++];
-    VisionRx->Data.Head_frame[2] = buffer[i++];
+    VisionRx->Data.Head_frame = buffer[i++];
+    VisionRx->Data.End_frame = buffer[11];
 
-    if (VisionRx->Data.Head_frame[0] != 0xAA || VisionRx->Data.Head_frame[1] != 0xAF || VisionRx->Data.Head_frame[2] != 0x08)
+    if (VisionRx->Data.Head_frame != 0xCD )
     {
         return;
     }
-    
+    if (VisionRx->Data.End_frame != 0xDC)
+    {
+        return;
+    }
     Union_temp.Data[1] = buffer[i++];
     Union_temp.Data[0] = buffer[i++];
     VisionRx->Data.x1 = Union_temp.Data_u16;
@@ -65,7 +67,7 @@ uint8_t vision_offline()
     // if (VisionRxData.Data.isOnline == 1)
     // {
     VisionRxData.Data.OffCounter++;
-    if ( VisionRxData.Data.OffCounter > 30)
+    if ( VisionRxData.Data.OffCounter > 50)
     {
          memset(&VisionRxData.Data, 0, sizeof(VisionRxData.Data));
          VisionRxData.Data.OffCounter = 50;

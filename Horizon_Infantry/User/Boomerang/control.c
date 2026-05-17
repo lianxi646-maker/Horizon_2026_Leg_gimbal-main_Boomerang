@@ -47,11 +47,11 @@ void ALL_Init()
 	PID_init(&ALL_MOTOR.DJI_3508_Pull.PID_P, PID_POSITION,PID_P_Pull, 10000, 0);//拉簧角度环
 	PID_init(&ALL_MOTOR.DJI_3508_Pull.PID_S, PID_POSITION,PID_S_Pull, 28000, 0);//拉簧速度环
 	
-	// 	float PID_P_Trigger[3] = {   0.1f,   0.0f,   0.0f   };
-    // float PID_S_Trigger[3] = {   10.0f,   0.0f,   5.0f  };
+		float PID_P_Trigger[3] = {   0.1f,   0.0f,   0.0f   };
+    float PID_S_Trigger[3] = {   10.0f,   0.0f,   5.0f  };
 	
-	// PID_init(&ALL_MOTOR.DJI_2006_Trigger.PID_P, PID_POSITION,PID_P_Trigger, 10000, 0);//扳机角度环
-	// PID_init(&ALL_MOTOR.DJI_2006_Trigger.PID_S, PID_POSITION,PID_S_Trigger, 7000, 0);//扳机速度环
+	PID_init(&ALL_MOTOR.DJI_2006_Trigger.PID_P, PID_POSITION,PID_P_Trigger, 10000, 0);//扳机角度环
+	PID_init(&ALL_MOTOR.DJI_2006_Trigger.PID_S, PID_POSITION,PID_S_Trigger, 7000, 0);//扳机速度环
 	
 		float PID_P_Yaw[3] = {   0.2f,   0.0f,   0.0f   };
     float PID_S_Yaw[3] = {   2.0f,   0.0f,   1.0f  };
@@ -87,21 +87,21 @@ void Control(uint8_t mod)
 	}else if(mod == 3)
 	{//手动模式射击		
 		ALL_MOTOR.DJI_2006_Trigger.DATA.Aim -= WHW_V_DBUS.Remote.CH3_int16 * 3.0f;
-		ALL_MOTOR.DJI_6020_Yaw.DATA.Aim -= WHW_V_DBUS.Remote.CH2_int16 * 3.0;
+		ALL_MOTOR.DJI_2006_Yaw.DATA.Aim -= WHW_V_DBUS.Remote.CH2_int16 * 3.0;
 		ALL_MOTOR.DJI_3508_Pull.DATA.Aim += WHW_V_DBUS.Remote.CH1_int16 * 4.0f;
 	}else
 	{//清空
 		ALL_MOTOR.DJI_2006_Trigger.DATA.Aim = ALL_MOTOR.DJI_2006_Trigger.DATA.Angle_Infinite;
-		ALL_MOTOR.DJI_6020_Yaw.DATA.Aim = ALL_MOTOR.DJI_6020_Yaw.DATA.Angle_Infinite;
+		ALL_MOTOR.DJI_2006_Yaw.DATA.Aim = ALL_MOTOR.DJI_2006_Yaw.DATA.Angle_Infinite;
 		ALL_MOTOR.DJI_3508_Pull.DATA.Aim = ALL_MOTOR.DJI_3508_Pull.DATA.Angle_Infinite;
 	}	
 	
 	/*2006扳机PID计算*/
 	PID_calc(&ALL_MOTOR.DJI_2006_Trigger.PID_P,ALL_MOTOR.DJI_2006_Trigger.DATA.Angle_Infinite,ALL_MOTOR.DJI_2006_Trigger.DATA.Aim);
 	PID_calc(&ALL_MOTOR.DJI_2006_Trigger.PID_S,ALL_MOTOR.DJI_2006_Trigger.DATA.Speed_now,ALL_MOTOR.DJI_2006_Trigger.PID_P.out);
-	// /*2006YAW轴PID计算*/
-	// PID_calc(&ALL_MOTOR.DJI_2006_Yaw.PID_P,ALL_MOTOR.DJI_2006_Yaw.DATA.Angle_Infinite,ALL_MOTOR.DJI_2006_Yaw.DATA.Aim);
-	// PID_calc(&ALL_MOTOR.DJI_2006_Yaw.PID_S,ALL_MOTOR.DJI_2006_Yaw.DATA.Speed_now,ALL_MOTOR.DJI_2006_Yaw.PID_P.out);
+	/*2006YAW轴PID计算*/
+	PID_calc(&ALL_MOTOR.DJI_2006_Yaw.PID_P,ALL_MOTOR.DJI_2006_Yaw.DATA.Angle_Infinite,ALL_MOTOR.DJI_2006_Yaw.DATA.Aim);
+	PID_calc(&ALL_MOTOR.DJI_2006_Yaw.PID_S,ALL_MOTOR.DJI_2006_Yaw.DATA.Speed_now,ALL_MOTOR.DJI_2006_Yaw.PID_P.out);
 	/*3508拉簧PID计算*/
 	PID_calc(&ALL_MOTOR.DJI_3508_Pull.PID_P,ALL_MOTOR.DJI_3508_Pull.DATA.Angle_Infinite,ALL_MOTOR.DJI_3508_Pull.DATA.Aim);
 	PID_calc(&ALL_MOTOR.DJI_3508_Pull.PID_S,ALL_MOTOR.DJI_3508_Pull.DATA.Speed_now,ALL_MOTOR.DJI_3508_Pull.PID_P.out);
@@ -116,7 +116,7 @@ void Control(uint8_t mod)
 	DJI_Current_Ctrl(&hcan2,
                      0x1FF,
                      (int16_t)ALL_MOTOR.DJI_2006_Trigger.PID_S.out,
-                     0,
+                     (uint16_t)ALL_MOTOR.DJI_2006_Yaw.PID_S.out,
                      0,
 					 0);
 	DJI_Current_Ctrl(&hcan2,
@@ -127,7 +127,7 @@ void Control(uint8_t mod)
                      0);
 	DJI_Current_Ctrl(&hcan1,
 					 0x1FF,
-					 (int16_t)ALL_MOTOR.DJI_6020_Yaw.PID_S.out,
+					 0,
 					 (uint16_t)ALL_MOTOR.DJI_6020_turn.PID_S.out,
 					 0,
 					 0);									 			 
@@ -202,9 +202,9 @@ void windmill(uint8_t mod, User_Data_T User_data)
 				// }
 				//视觉标定
 				if(VisionRxData.Data.x0>50){
-					ALL_MOTOR.DJI_6020_Yaw.DATA.Aim -= 2.0;
+					ALL_MOTOR.DJI_2006_Yaw.DATA.Aim -= 2.0;
 				}else if(VisionRxData.Data.x0<-50){
-					ALL_MOTOR.DJI_6020_Yaw.DATA.Aim += 2.0;
+					ALL_MOTOR.DJI_2006_Yaw.DATA.Aim += 2.0;
 				}
 				//初始化6020位置
 				ALL_MOTOR.DJI_6020_turn.DATA.Aim = 0;
@@ -288,9 +288,9 @@ void windmill(uint8_t mod, User_Data_T User_data)
 				// }
 				//视觉标定
 				if(VisionRxData.Data.x0>50){
-					ALL_MOTOR.DJI_6020_Yaw.DATA.Aim -= 2.0;
+					ALL_MOTOR.DJI_2006_Yaw.DATA.Aim -= 2.0;
 				}else if(VisionRxData.Data.x0<-50){
-					ALL_MOTOR.DJI_6020_Yaw.DATA.Aim += 2.0;
+					ALL_MOTOR.DJI_2006_Yaw.DATA.Aim += 2.0;
 				}
 				if(pin_switch_down == 1){
 					ALL_MOTOR.DJI_3508_Pull.DATA.Aim -=0.5;
@@ -366,9 +366,9 @@ void ControlServo(uint8_t mod, User_Data_T User_data)
 				// }
 				//视觉标定
 				if(VisionRxData.Data.x0>50){
-					ALL_MOTOR.DJI_6020_Yaw.DATA.Aim -= 2.0;
+					ALL_MOTOR.DJI_2006_Yaw.DATA.Aim -= 2.0;
 				}else if(VisionRxData.Data.x0<-50){
-					ALL_MOTOR.DJI_6020_Yaw.DATA.Aim += 2.0;
+					ALL_MOTOR.DJI_2006_Yaw.DATA.Aim += 2.0;
 				}
 				//初始化舵机位置
 				//Servo_SetAngle(&htim12, TIM_CHANNEL_2, 102.0f);
@@ -386,7 +386,7 @@ void ControlServo(uint8_t mod, User_Data_T User_data)
 							osDelay(50);
 							__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, Angle_To_CCR(90));//第一发打出
 							//将机械臂移动到第二发镖的等待位置
-							Servo_SetAngle(&htim1, TIM_CHANNEL_2, 102.0f);
+							ALL_MOTOR.DJI_6020_turn.DATA.Aim = 3000;
 							osDelay(500);
 							//吸取飞镖
 							ServoMoveMulti(2, ids, angles, time_ms);
@@ -396,7 +396,7 @@ void ControlServo(uint8_t mod, User_Data_T User_data)
 							ServoMoveMulti(2, ids, angles3, time_ms);
 							osDelay(1000);
 							//机械臂回到待装填位置
-							Servo_SetAngle(&htim1, TIM_CHANNEL_2, 126.0f);
+							ALL_MOTOR.DJI_6020_turn.DATA.Aim = 4000;
 							osDelay(500);
 							ServoMoveMulti(2, ids, angles4, time_ms);
 							second = 1;
@@ -418,7 +418,7 @@ void ControlServo(uint8_t mod, User_Data_T User_data)
 							// ServoMoveMulti(2, ids, angles4, time_ms);
 						}
 				}
-		}
+			}
 				
 		
 			if(second ==1){
@@ -438,7 +438,7 @@ void ControlServo(uint8_t mod, User_Data_T User_data)
 						osDelay(50);
 					__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, Angle_To_CCR(90));//第二发打出
 					//将机械臂移到第三发镖等待位置
-					Servo_SetAngle(&htim1, TIM_CHANNEL_2, 81.0f);
+					ALL_MOTOR.DJI_6020_turn.DATA.Aim = 2000;
 					osDelay(500);
 					//吸取第三发镖
 					ServoMoveMulti(2, ids, angles, time_ms);
@@ -448,7 +448,7 @@ void ControlServo(uint8_t mod, User_Data_T User_data)
 					ServoMoveMulti(2, ids, angles3, time_ms);
 					osDelay(1000);
 					//机械臂回到待装填位置
-					Servo_SetAngle(&htim1, TIM_CHANNEL_2, 126.0f);
+					ALL_MOTOR.DJI_6020_turn.DATA.Aim = 4000;
 					osDelay(500);
 					ServoMoveMulti(2, ids, angles4, time_ms);
 						second =0;
@@ -465,9 +465,9 @@ void ControlServo(uint8_t mod, User_Data_T User_data)
 				// }
 				//视觉标定
 				if(VisionRxData.Data.x0>50){
-					ALL_MOTOR.DJI_6020_Yaw.DATA.Aim -= 2.0;
+					ALL_MOTOR.DJI_2006_Yaw.DATA.Aim -= 2.0;
 				}else if(VisionRxData.Data.x0<-50){
-					ALL_MOTOR.DJI_6020_Yaw.DATA.Aim += 2.0;
+					ALL_MOTOR.DJI_2006_Yaw.DATA.Aim += 2.0;
 				}
 				if(pin_switch_down == 1){
 					ALL_MOTOR.DJI_3508_Pull.DATA.Aim -=0.5;
@@ -486,7 +486,7 @@ void ControlServo(uint8_t mod, User_Data_T User_data)
 						osDelay(50);
 					__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, Angle_To_CCR(90));//第三发打出
 					//将机械臂移到第四发镖等待位置
-					Servo_SetAngle(&htim1, TIM_CHANNEL_2, 154.0f);
+					ALL_MOTOR.DJI_6020_turn.DATA.Aim = 5000;
 					osDelay(500);
 					//吸取第四发镖
 					ServoMoveMulti(2, ids, angles7, time_ms);
@@ -496,7 +496,7 @@ void ControlServo(uint8_t mod, User_Data_T User_data)
 					ServoMoveMulti(2, ids, angles3, time_ms);
 					osDelay(1000);
 					//机械臂回到待装填位置
-					Servo_SetAngle(&htim1, TIM_CHANNEL_2, 126.0f);
+					ALL_MOTOR.DJI_6020_turn.DATA.Aim = 4000;
 					osDelay(500);
 					ServoMoveMulti(2, ids, angles4, time_ms);
 						third =0;

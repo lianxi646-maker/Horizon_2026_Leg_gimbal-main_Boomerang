@@ -22,7 +22,7 @@ typedef struct
     uint8_t OriginData[16];
     struct Data
     {
-      uint8_t Head_frame[3];
+      uint8_t Head_frame;
       uint8_t End_frame;
       int16_t x0;
       int16_t x1;

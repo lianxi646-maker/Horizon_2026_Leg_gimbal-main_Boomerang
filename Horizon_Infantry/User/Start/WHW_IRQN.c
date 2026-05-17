@@ -221,8 +221,12 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef* hcan)
 	{
 		switch (can_rx.StdId)//识别ID
 		{
-			case 0x205://6020
-                WHW_F_MOTOR_CAN_RX_6020RM(&ALL_MOTOR.DJI_6020.DATA, rx_data);
+			case 0x205://6020_YAW
+                WHW_F_MOTOR_CAN_RX_6020RM(&ALL_MOTOR.DJI_6020_Yaw.DATA, rx_data);
+                memcpy(test, rx_data, 8);
+                break;
+            case 0x206://6020_turn
+                WHW_F_MOTOR_CAN_RX_6020RM(&ALL_MOTOR.DJI_6020_turn.DATA, rx_data);
                 memcpy(test, rx_data, 8);
                 break;
 			

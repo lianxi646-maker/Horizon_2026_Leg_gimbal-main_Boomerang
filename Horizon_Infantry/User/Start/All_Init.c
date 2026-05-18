@@ -32,6 +32,7 @@
 
 #include "All_Init.h"
 #include "Gimbal_Task.h"
+#include "Boomerang_task.h"
 
 //总控制结构体
 CONTAL_Typedef RUI_V_CONTAL = { 0 };
@@ -123,6 +124,7 @@ void Everying_Init(void)
     TIM4->CCR3 = 0;
 
     MOTOR_PID_Gimbal_INIT(&ALL_MOTOR);
+    MOTOR_PID_Boomerang_INIT(&ALL_MOTOR);
     
     //扳机舵机PWM初始化
     HAL_TIM_PWM_Start(&htim1,TIM_CHANNEL_1);

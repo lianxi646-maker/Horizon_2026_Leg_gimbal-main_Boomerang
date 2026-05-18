@@ -38,111 +38,44 @@ uint8_t pin_switch_down=0, pin_switch_up=0;
 	//uint8_t  fifth = 0;
 	uint8_t state = 0;
 	//uint8_t  load = 1;
-	uint8_t state_now = 5;
+	//uint8_t state_now = 5;
 
-void ALL_Init()
-{
-		float PID_P_Pull[3] = {   0.1f,   0.0f,   0.0f   };
-    float PID_S_Pull[3] = {   5.0f,   0.0f,   2.0f  };
-	PID_init(&ALL_MOTOR.DJI_3508_Pull.PID_P, PID_POSITION,PID_P_Pull, 10000, 0);//拉簧角度环
-	PID_init(&ALL_MOTOR.DJI_3508_Pull.PID_S, PID_POSITION,PID_S_Pull, 28000, 0);//拉簧速度环
-	
-		float PID_P_Trigger[3] = {   0.1f,   0.0f,   0.0f   };
-    float PID_S_Trigger[3] = {   10.0f,   0.0f,   5.0f  };
-	
-	PID_init(&ALL_MOTOR.DJI_2006_Trigger.PID_P, PID_POSITION,PID_P_Trigger, 10000, 0);//扳机角度环
-	PID_init(&ALL_MOTOR.DJI_2006_Trigger.PID_S, PID_POSITION,PID_S_Trigger, 7000, 0);//扳机速度环
-	
-		float PID_P_Yaw[3] = {   0.2f,   0.0f,   0.0f   };
-    float PID_S_Yaw[3] = {   2.0f,   0.0f,   1.0f  };
-	
-	PID_init(&ALL_MOTOR.DJI_2006_Yaw.PID_P, PID_POSITION,PID_P_Yaw, 10000, 0);//YAW轴角度环
-	PID_init(&ALL_MOTOR.DJI_2006_Yaw.PID_S, PID_POSITION,PID_S_Yaw, 15000, 0);//YAW轴速度环	
-
-	float PID_P_6020_Yaw[3] = {   3.0f,   0.0f,   0.0f   };
-	float PID_S_6020_Yaw[3] = {   5.0f,   0.1f,   2.0f  };
-
-	PID_init(&ALL_MOTOR.DJI_6020_Yaw.PID_P, PID_POSITION,PID_P_6020_Yaw, 200, 0);//6020角度环
-	PID_init(&ALL_MOTOR.DJI_6020_Yaw.PID_S, PID_POSITION,PID_S_6020_Yaw, 10000, 0);//6020速度环
-
-	float PID_P_6020_turn[3] = {   3.0f,   0.0f,   0.0f   };
-	float PID_S_6020_turn[3] = {   5.0f,   0.1f,   2.0f  };
-
-	PID_init(&ALL_MOTOR.DJI_6020_turn.PID_P, PID_POSITION,PID_P_6020_turn, 200, 0);//6020角度环
-	PID_init(&ALL_MOTOR.DJI_6020_turn.PID_S, PID_POSITION,PID_S_6020_turn, 10000, 0);//6020速度环
-}
 
 float qqq = 0.5f;
 int temp1;
 uint8_t shoot=0;
 void Control(uint8_t mod)
 {
-	if(mod == 1)
+	switch(mod)
 	{
-		Control_Referee( User_data);
-	}else if(mod == 2)
-	{
-	//视觉标定
-		// ProcessReceivedData();
-	}else if(mod == 3)
-	{//手动模式射击		
-		ALL_MOTOR.DJI_2006_Trigger.DATA.Aim -= WHW_V_DBUS.Remote.CH3_int16 * 3.0f;
-		ALL_MOTOR.DJI_2006_Yaw.DATA.Aim -= WHW_V_DBUS.Remote.CH2_int16 * 3.0;
-		ALL_MOTOR.DJI_3508_Pull.DATA.Aim += WHW_V_DBUS.Remote.CH1_int16 * 4.0f;
-	}else
-	{//清空
-		ALL_MOTOR.DJI_2006_Trigger.DATA.Aim = ALL_MOTOR.DJI_2006_Trigger.DATA.Angle_Infinite;
-		ALL_MOTOR.DJI_2006_Yaw.DATA.Aim = ALL_MOTOR.DJI_2006_Yaw.DATA.Angle_Infinite;
-		ALL_MOTOR.DJI_3508_Pull.DATA.Aim = ALL_MOTOR.DJI_3508_Pull.DATA.Angle_Infinite;
-	}	
-	
-	/*2006扳机PID计算*/
-	PID_calc(&ALL_MOTOR.DJI_2006_Trigger.PID_P,ALL_MOTOR.DJI_2006_Trigger.DATA.Angle_Infinite,ALL_MOTOR.DJI_2006_Trigger.DATA.Aim);
-	PID_calc(&ALL_MOTOR.DJI_2006_Trigger.PID_S,ALL_MOTOR.DJI_2006_Trigger.DATA.Speed_now,ALL_MOTOR.DJI_2006_Trigger.PID_P.out);
-	/*2006YAW轴PID计算*/
-	PID_calc(&ALL_MOTOR.DJI_2006_Yaw.PID_P,ALL_MOTOR.DJI_2006_Yaw.DATA.Angle_Infinite,ALL_MOTOR.DJI_2006_Yaw.DATA.Aim);
-	PID_calc(&ALL_MOTOR.DJI_2006_Yaw.PID_S,ALL_MOTOR.DJI_2006_Yaw.DATA.Speed_now,ALL_MOTOR.DJI_2006_Yaw.PID_P.out);
-	/*3508拉簧PID计算*/
-	PID_calc(&ALL_MOTOR.DJI_3508_Pull.PID_P,ALL_MOTOR.DJI_3508_Pull.DATA.Angle_Infinite,ALL_MOTOR.DJI_3508_Pull.DATA.Aim);
-	PID_calc(&ALL_MOTOR.DJI_3508_Pull.PID_S,ALL_MOTOR.DJI_3508_Pull.DATA.Speed_now,ALL_MOTOR.DJI_3508_Pull.PID_P.out);
-	/*6020_Yaw轴PID计算*/
-	PID_calc(&ALL_MOTOR.DJI_6020_Yaw.PID_P,ALL_MOTOR.DJI_6020_Yaw.DATA.Angle_Infinite,ALL_MOTOR.DJI_6020_Yaw.DATA.Aim);
-	PID_calc(&ALL_MOTOR.DJI_6020_Yaw.PID_S,ALL_MOTOR.DJI_6020_Yaw.DATA.Speed_now,ALL_MOTOR.DJI_6020_Yaw.PID_P.out);
-	/*6020_turn换弹PID计算*/
-	PID_calc(&ALL_MOTOR.DJI_6020_turn.PID_P,ALL_MOTOR.DJI_6020_turn.DATA.Angle_Infinite,ALL_MOTOR.DJI_6020_turn.DATA.Aim);
-	PID_calc(&ALL_MOTOR.DJI_6020_turn.PID_S,ALL_MOTOR.DJI_6020_turn.DATA.Speed_now,ALL_MOTOR.DJI_6020_turn.PID_P.out);
-
-	/*CAN发送*/
-	DJI_Current_Ctrl(&hcan2,
-                     0x1FF,
-                     (int16_t)ALL_MOTOR.DJI_2006_Trigger.PID_S.out,
-                     (uint16_t)ALL_MOTOR.DJI_2006_Yaw.PID_S.out,
-                     0,
-					 0);
-	DJI_Current_Ctrl(&hcan2,
-                     0x200,
-                     (int16_t)ALL_MOTOR.DJI_3508_Pull.PID_S.out,
-                     0,
-                     0,
-                     0);
-	DJI_Current_Ctrl(&hcan1,
-					 0x1FF,
-					 0,
-					 (uint16_t)ALL_MOTOR.DJI_6020_turn.PID_S.out,
-					 0,
-					 0);									 			 
+		case 1://基于裁判系统信息的全自动模式
+			Control_Referee( User_data);
+			break;
+		case 3://初始（遥控器拨盘位于中间）无模式
+			break;
+		case 2://手动模式射击		
+			ALL_MOTOR.DJI_2006_Trigger.DATA.Aim -= WHW_V_DBUS.Remote.CH3_int16 * 3.0f;
+			ALL_MOTOR.DJI_2006_Yaw.DATA.Aim -= WHW_V_DBUS.Remote.CH2_int16 * 3.0;
+			ALL_MOTOR.DJI_3508_Pull.DATA.Aim += WHW_V_DBUS.Remote.CH1_int16 * 4.0f;
+			break;
+		default://清空
+			ALL_MOTOR.DJI_2006_Trigger.DATA.Aim = ALL_MOTOR.DJI_2006_Trigger.DATA.Angle_Infinite;
+			ALL_MOTOR.DJI_2006_Yaw.DATA.Aim = ALL_MOTOR.DJI_2006_Yaw.DATA.Angle_Infinite;
+			ALL_MOTOR.DJI_3508_Pull.DATA.Aim = ALL_MOTOR.DJI_3508_Pull.DATA.Angle_Infinite;
+			break;	
+	}
 }
 	// 将角度（0~180°）转换为 CCR 值
-	int  Angle_To_CCR(float angle) 
-		{
-			 // 高电平时间范围：0.5ms  2.5ms
-			 float pulse_min = 0.5;  // 0° 对应 0.5ms
-			 float pulse_max = 2.5;  // 180° 对应 2.5ms
-			 float pulse_width = pulse_min + (angle / 180.0) * (pulse_max - pulse_min);
+uint32_t  Angle_To_CCR(float angle) 
+{
+	// 高电平时间范围：0.5ms  2.5ms
+	float pulse_min = 0.5;  // 0° 对应 0.5ms
+	float pulse_max = 2.5;  // 180° 对应 2.5ms
+	float pulse_width = pulse_min + (angle / 180.0) * (pulse_max - pulse_min);
 				
-			 // 计算 CCR 值：CCR = (pulse_width / 20ms) * (ARR + 1)
-			return (uint32_t)((pulse_width / 20.0) * 20000); // ARR+1 = 19999+1=20000
-			}		
+	// 计算 CCR 值：CCR = (pulse_width / 20ms) * (ARR + 1)
+	return (uint32_t)((pulse_width / 20.0) * 20000); // ARR+1 = 19999+1=20000
+}		
 
 void Control_Referee( User_Data_T User_data)
 {
@@ -172,6 +105,8 @@ void Control_Referee( User_Data_T User_data)
 				case 2:
 					//windmill(state, User_data);
 					ControlServo(state, User_data);
+					break;
+				default:
 					break;
 			}
 		default:

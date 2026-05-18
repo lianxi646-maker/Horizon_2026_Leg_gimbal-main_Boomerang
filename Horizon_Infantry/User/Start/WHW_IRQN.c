@@ -68,6 +68,7 @@
 #include "Gimbal_Task.h"
 #include "control.h"
 #include "vision.h"
+#include "Boomerang_task.h"
 
 uint8_t move_G, move_S, move_C, move_P;
 float t1,t2,dt;
@@ -120,7 +121,7 @@ void StartRobotUITask(void const * argument)
     }
 }
 
-//自动模式下的模式切换
+//接收视觉数据
 void StartMoveTask(void const * argument)
 {
     portTickType currentTimeMove;
@@ -128,13 +129,26 @@ void StartMoveTask(void const * argument)
 
     for (;;)
     {
-        Vision_Tx_Data(User_data.dart_info.dart_selected_target);
-        // VOFA_justfloat(1.0, 0,0,0,0,0,0,0,0,0);
+        switch(VisionRxData.Data.isOnline)
+        {
+            case 0:
+                //离线
+                break;
+            case 1:
+                //在线
+                Vision_Tx_Data(User_data.dart_info.dart_selected_target);
+                break;
+            case 2:
+                //离线检测出错
+                break;
+            default:
+                break;
+        }
         osDelay(2);
     }
 }
 
-//对抗控制任务(电容,发射)
+//飞镖电机任务
 void StartDefiantTask(void const * argument)
 {
     portTickType currentTimeDefiant;
@@ -142,6 +156,7 @@ void StartDefiantTask(void const * argument)
 
     for(;;)
     {
+        Boomerang_task();
         osDelay(2);
     }
 }
@@ -177,7 +192,7 @@ void StartIMUTask(void const * argument)
     }
 }
 
-//整车监控任务
+//视觉离线检测任务
 void StartRootTask(void const * argument)
 {
     portTickType currentTimeRoot;

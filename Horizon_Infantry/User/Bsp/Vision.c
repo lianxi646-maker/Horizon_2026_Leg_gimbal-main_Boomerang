@@ -69,7 +69,7 @@ uint8_t vision_offline()
     VisionRxData.Data.OffCounter++;
     if ( VisionRxData.Data.OffCounter > 50)
     {
-         memset(&VisionRxData.Data, 0, sizeof(VisionRxData.Data));
+         //memset(&VisionRxData.Data, 0, sizeof(VisionRxData.Data));
          VisionRxData.Data.OffCounter = 50;
         return 0; // 离线
     }

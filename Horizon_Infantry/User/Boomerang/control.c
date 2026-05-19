@@ -43,6 +43,9 @@ uint8_t pin_switch_down=0, pin_switch_up=0,pin_switch_power=0;
 	//uint8_t state_now = 5;
 
 
+	uint8_t DJI_2006_trigger_angle_init=0;
+
+
 float qqq = 0.5f;
 int temp1;
 uint8_t shoot=0;
@@ -494,16 +497,17 @@ void turn_target(uint8_t mod,User_Data_T User_data,float Aim_base,float Aim_outp
 		case 1://未标定时的力量确定
 			ALL_MOTOR.DJI_2006_Trigger.DATA.Aim +=2.0;
 			if(pin_switch_power == 0){
+				DJI_2006_trigger_angle_init=ALL_MOTOR.DJI_2006_Trigger.DATA.Angle_now;
 				switch(User_data.dart_info.dart_selected_target)
 				{
 					case 0:
-						ALL_MOTOR.DJI_2006_Yaw.DATA.Aim = Aim_outpost;
+						ALL_MOTOR.DJI_2006_Yaw.DATA.Aim = Aim_outpost+DJI_2006_trigger_angle_init;
 						break;
 					case 1:
 					case 2:
 					case 3:
 					case 4:
-						ALL_MOTOR.DJI_2006_Yaw.DATA.Aim = Aim_base;
+						ALL_MOTOR.DJI_2006_Yaw.DATA.Aim = Aim_base+DJI_2006_trigger_angle_init;
 						break;
 					default:
 						break;
@@ -514,13 +518,13 @@ void turn_target(uint8_t mod,User_Data_T User_data,float Aim_base,float Aim_outp
 			switch(User_data.dart_info.dart_selected_target)
 				{
 					case 0:
-						ALL_MOTOR.DJI_2006_Yaw.DATA.Aim = Aim_outpost;
+						ALL_MOTOR.DJI_2006_Yaw.DATA.Aim = Aim_outpost+DJI_2006_trigger_angle_init;
 						break;
 					case 1:
 					case 2:
 					case 3:
 					case 4:
-						ALL_MOTOR.DJI_2006_Yaw.DATA.Aim = Aim_base;
+						ALL_MOTOR.DJI_2006_Yaw.DATA.Aim = Aim_base+DJI_2006_trigger_angle_init;
 						break;
 					default:
 						break;

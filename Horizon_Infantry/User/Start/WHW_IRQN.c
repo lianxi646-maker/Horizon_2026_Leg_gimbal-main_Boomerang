@@ -117,7 +117,8 @@ void StartRobotUITask(void const * argument)
 			//Control_Referee( User_data);
             // Controlservo(WHW_V_DBUS.Remote.S1_u8);
 //			Control(1);
-            Control(WHW_V_DBUS.Remote.S2_u8);
+            Control(WHW_V_DBUS.Remote.S1_u8);
+					// ALL_MOTOR.DJI_6020_turn.DATA.Aim = 0;
         osDelay(2);
     }
 }
@@ -233,25 +234,23 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef* hcan)
 
     HAL_CAN_GetRxMessage(hcan , CAN_RX_FIFO0 , &can_rx , rx_data);
     
-	if (hcan == &hcan1)//CAN1总线判断
+	if (hcan == &hcan2)//CAN1总线判断
 	{
 		switch (can_rx.StdId)//识别ID
 		{
-			case 0x205://6020_YAW
-                WHW_F_MOTOR_CAN_RX_6020RM(&ALL_MOTOR.DJI_6020_Yaw.DATA, rx_data);
+			case 0x205://6020_turn
+                WHW_F_MOTOR_CAN_RX_6020RM(&ALL_MOTOR.DJI_6020_turn.DATA, rx_data);
                 memcpy(test, rx_data, 8);
                 break;
-            case 0x206://6020_turn
-                WHW_F_MOTOR_CAN_RX_6020RM(&ALL_MOTOR.DJI_6020_turn.DATA, rx_data);
+            case 0x206://6020_yaw
+                WHW_F_MOTOR_CAN_RX_6020RM(&ALL_MOTOR.DJI_6020_Yaw.DATA, rx_data);
                 memcpy(test, rx_data, 8);
                 break;
 			
 			
 		}
-        RUI_F_MOTOR_CAN_RX_3508RM(&ALL_MOTOR.DJI_3510.DATA, rx_data);
-        memcpy(test, rx_data, 8);
 	}
-	if (hcan == &hcan2)
+	if (hcan == &hcan1)
 	{
 		switch (can_rx.StdId)
 		{
@@ -259,7 +258,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef* hcan)
 				// root_t.motorRoot.feedAmmoDTime = 0;
                 RUI_F_MOTOR_CAN_RX_3508RM(&ALL_MOTOR.DJI_3508_Pull.DATA, rx_data);
 				memcpy(test, rx_data, 8);
-			case 0x205://扳机
+			case 0x202://扳机
                 RUI_F_MOTOR_CAN_RX_2006RM(&ALL_MOTOR.DJI_2006_Trigger.DATA, rx_data);
 				memcpy(test, rx_data, 8);
                 break;

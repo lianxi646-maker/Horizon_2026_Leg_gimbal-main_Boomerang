@@ -32,7 +32,7 @@ uint8_t pin_switch_down=0, pin_switch_up=0,pin_switch_power=0;
 
 	
 	uint8_t  first = 1;
-	uint8_t  second = 0;
+	uint8_t  second = 1;
 	uint8_t  third = 0;
 	uint8_t  forth = 0;
 	//uint8_t  fifth = 0;
@@ -126,6 +126,7 @@ void Control_Referee( User_Data_T User_data)
 					ControlServo(state_launch, User_data);
 					switch(second){
 						case 1:
+						case 2:
 							state_launch = 1;
 							break;
 						case 0:
@@ -134,7 +135,6 @@ void Control_Referee( User_Data_T User_data)
 						default:
 							break;
 					}
-					osDelay(30000);
 					break;
 				case 2:
 					//windmill(state, User_data);
@@ -330,16 +330,20 @@ void ControlServo(uint8_t mod, User_Data_T User_data)
 		{
 			case 1://第一发和第二发
 				if(first==1){
+					//电磁铁上电
+					HAL_GPIO_WritePin(GPIOC ,GPIO_PIN_6 ,GPIO_PIN_SET);
 					// //切换目标
 					// if(User_data.dart_info.dart_selected_target == 1){
 					// 	ALL_MOTOR.DJI_2006_Yaw.DATA.Aim = -20000;
 					// 	state_now=1;
 					// }
 					//视觉标定
-					if(VisionRxData.Data.x0>50){
+					if(VisionRxData.Data.x0>10){
 						ALL_MOTOR.DJI_2006_Yaw.DATA.Aim -= 200.0;
-					}else if(VisionRxData.Data.x0<-50){
+						return;
+					}else if(VisionRxData.Data.x0<-10){
 						ALL_MOTOR.DJI_2006_Yaw.DATA.Aim += 200.0;
+						return;
 					}
 					//初始化舵机位置
 					//Servo_SetAngle(&htim12, TIM_CHANNEL_2, 102.0f);
@@ -379,7 +383,7 @@ void ControlServo(uint8_t mod, User_Data_T User_data)
 									ALL_MOTOR.DJI_6020_turn.DATA.Aim = 4000;
 									osDelay(500);
 									ServoMoveMulti(2, ids, angles4, time_ms);
-									second = 1;
+									second = 2;
 									first=0;
 								// for (int i = 0; i < 5; i++) {
 								// 	first = 0;
@@ -405,7 +409,7 @@ void ControlServo(uint8_t mod, User_Data_T User_data)
 							break;
 					}
 				}
-				if(second ==1){
+				if(second ==2){
 					switch(pin_switch_down)
 					{
 						case 1:
@@ -416,7 +420,8 @@ void ControlServo(uint8_t mod, User_Data_T User_data)
 							osDelay(25);
 							//第二发装填完成
 							HAL_GPIO_WritePin(GPIOC ,GPIO_PIN_6 ,GPIO_PIN_RESET);
-							osDelay(300);
+							osDelay(200);
+							HAL_GPIO_WritePin(GPIOC ,GPIO_PIN_6 ,GPIO_PIN_SET);//电磁铁重新上电
 							switch(pin_switch_up)
 							{
 								case 1:
@@ -466,10 +471,12 @@ void ControlServo(uint8_t mod, User_Data_T User_data)
 					// 	state_now=5;
 					// }
 					//视觉标定
-					if(VisionRxData.Data.x0>50){
+					if(VisionRxData.Data.x0>10){
 						ALL_MOTOR.DJI_2006_Yaw.DATA.Aim -= 200.0;
-					}else if(VisionRxData.Data.x0<-50){
+						return;
+					}else if(VisionRxData.Data.x0<-10){
 						ALL_MOTOR.DJI_2006_Yaw.DATA.Aim += 200.0;
+						return;
 					}
 					switch(pin_switch_down)
 					{
@@ -481,7 +488,8 @@ void ControlServo(uint8_t mod, User_Data_T User_data)
 							osDelay(25);
 							//第二发装填完成
 							HAL_GPIO_WritePin(GPIOC ,GPIO_PIN_6 ,GPIO_PIN_RESET);
-							osDelay(300);
+							osDelay(200);
+							HAL_GPIO_WritePin(GPIOC ,GPIO_PIN_6 ,GPIO_PIN_SET);//电磁铁重新上电
 							switch(pin_switch_up)
 							{
 								case 1:

@@ -523,26 +523,36 @@ void ControlServo(uint8_t mod, User_Data_T User_data)
 					}
 				}
 				if(forth ==1){
-					if(pin_switch_down == 1){
-						ALL_MOTOR.DJI_3508_Pull.DATA.Aim -=300.0;
-					}else if(pin_switch_down == 0){
-						ALL_MOTOR.DJI_3508_Pull.DATA.Aim -=0;
-						osDelay(25);
-						//第四发装填完成
-						HAL_GPIO_WritePin(GPIOC ,GPIO_PIN_6 ,GPIO_PIN_RESET);
-						if(pin_switch_up == 1){
-						ALL_MOTOR.DJI_3508_Pull.DATA.Aim +=600.0;
-						}else if(pin_switch_up == 0){
-							if(User_data.dart_info.dart_remaining_time <= 2){
+					switch(pin_switch_down){
+						case 1:
+							ALL_MOTOR.DJI_3508_Pull.DATA.Aim -=300.0;
+							break;
+						case 0:
+							ALL_MOTOR.DJI_3508_Pull.DATA.Aim -=0;
+							osDelay(25);
+							//第四发装填完成
+							HAL_GPIO_WritePin(GPIOC ,GPIO_PIN_6 ,GPIO_PIN_RESET);
+							switch(pin_switch_up){
+								case 1:
+									ALL_MOTOR.DJI_3508_Pull.DATA.Aim +=600.0;
+									break;
+								case 0:
+									if(User_data.dart_info.dart_remaining_time <= 2){
 
-							}else{
-								ALL_MOTOR.DJI_3508_Pull.DATA.Aim +=0;
-								osDelay(300);
-								__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, Angle_To_CCR(Servo_996R_angle_open));
-								osDelay(500);
-								__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, Angle_To_CCR(Servo_996R_angle_close));//第四发打出
+									}else{
+										ALL_MOTOR.DJI_3508_Pull.DATA.Aim +=0;
+										osDelay(300);
+										__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, Angle_To_CCR(Servo_996R_angle_open));
+										osDelay(500);
+										__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, Angle_To_CCR(Servo_996R_angle_close));//第四发打出
+									}
+									break;
+								default:
+									break;
 							}
-						}
+							break;
+						default:
+							break;
 					}
 					forth = 0;
 				}

@@ -8,6 +8,8 @@
 #include "ALL_Init.h"
 #include "control.h"
 
+extern uint32_t DJI_2006_trigger_angle_init;
+
 void MOTOR_PID_Boomerang_INIT(MOTOR_Typedef *motor);
 void Boomerang_task();
 

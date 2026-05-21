@@ -1,4 +1,5 @@
 #include "Boomerang_task.h"
+uint32_t DJI_2006_trigger_angle_init=0;
 void MOTOR_PID_Boomerang_INIT(MOTOR_Typedef *motor)
 {
     float PID_P_Pull[3] = {   1.0f,   0.0f,   0.0f   };
@@ -23,6 +24,8 @@ void MOTOR_PID_Boomerang_INIT(MOTOR_Typedef *motor)
 
 	PID_init(&ALL_MOTOR.DJI_6020_turn.PID_P, PID_POSITION,PID_P_6020_turn, 200, 0);//6020角度环
 	PID_init(&ALL_MOTOR.DJI_6020_turn.PID_S, PID_POSITION,PID_S_6020_turn, 10000, 0);//6020速度环
+
+	DJI_2006_trigger_angle_init=ALL_MOTOR.DJI_2006_Trigger.DATA.Angle_now;
 }
 
 void Boomerang_task()
@@ -49,8 +52,8 @@ void Boomerang_task()
 					 0);
 	DJI_Current_Ctrl(&hcan1,
                      0x200,
-                     0,//(int16_t)ALL_MOTOR.DJI_3508_Pull.PID_S.out,
-                     (int16_t)ALL_MOTOR.DJI_2006_Trigger.PID_S.out,
+                     (int16_t)ALL_MOTOR.DJI_3508_Pull.PID_S.out,
+                     0,//(int16_t)ALL_MOTOR.DJI_2006_Trigger.PID_S.out,
                      0,
                      0);
 	DJI_Current_Ctrl(&hcan2,

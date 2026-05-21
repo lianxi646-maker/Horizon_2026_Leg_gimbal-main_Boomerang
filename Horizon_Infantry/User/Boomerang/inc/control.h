@@ -7,6 +7,7 @@
 // #include "tim.h"
 #include "gpio.h"
 #include "Referee.h"
+#include "Boomerang_task.h"
 
 #define DJI_6020_turn_test 1
 #define DJI_2006_trigger_test 2

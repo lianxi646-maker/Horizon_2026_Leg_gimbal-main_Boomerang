@@ -45,4 +45,15 @@ extern	uint16_t angles5[];
 extern	uint16_t angles6[];
 extern	uint16_t angles7[];
 extern	uint16_t time_ms; 
+
+
+extern	uint8_t  first;
+extern	uint8_t  second;
+extern	uint8_t  third;
+extern	uint8_t  forth;
+extern	uint8_t state_launch;
+extern	uint8_t state_power;
+extern	uint8_t state_power_mid_turn ;
+extern	uint8_t Servo_996R_angle_close ;
+extern	uint8_t Servo_996R_angle_open ;
 #endif

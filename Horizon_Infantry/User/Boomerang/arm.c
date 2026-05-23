@@ -45,3 +45,16 @@ void Arm_Action_Sequence(float grap_angle)
     // 3️⃣ 最后转到目标位置
     Motor_TurnTo_Angle(3435.0f);
 }
+
+//飞镖抓取
+void Dart_Grab_Action()
+{
+    ServoMoveMulti(2, ids, angles, time_ms);
+    osDelay(1000);
+
+    ServoMoveMulti(2, ids, angles2, time_ms);
+    osDelay(1000);
+
+    ServoMoveMulti(2, ids, angles3, time_ms);
+    osDelay(1000);
+}

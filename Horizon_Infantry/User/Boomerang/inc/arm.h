@@ -5,6 +5,7 @@
 
 void Motor_TurnTo_Angle(float target_angle);
 void Arm_Action_Sequence(float grap_angle);
+void Dart_Grab_Action();
 
 
 #endif

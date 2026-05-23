@@ -10,10 +10,10 @@ void MOTOR_PID_Boomerang_INIT(MOTOR_Typedef *motor)
 	PID_init(&ALL_MOTOR.DJI_2006_Trigger.PID_P, PID_POSITION,PID_P_Trigger, 12000, 500);//扳机速度环
 	PID_init(&ALL_MOTOR.DJI_2006_Trigger.PID_S, PID_POSITION,PID_S_Trigger, 10000, 2000);//扳机速度环
 	
-	float PID_P_Yaw[3] = {   -50.0f,   -5.0f,   0.0f   };
+	float PID_P_Yaw[3] = {   -50.0f,   -0.01f,   0.0f   };
     float PID_S_Yaw[3] = {   20.0f,   0.0f,   0.5f  };
 	
-	PID_init(&ALL_MOTOR.DJI_2006_Yaw.PID_P, PID_POSITION,PID_P_Yaw, 770, 100);//YAW轴视觉位置环
+	PID_init(&ALL_MOTOR.DJI_2006_Yaw.PID_P, PID_POSITION,PID_P_Yaw, 700, 10);//YAW轴视觉位置环
 	PID_init(&ALL_MOTOR.DJI_2006_Yaw.PID_S, PID_POSITION,PID_S_Yaw, 10000, 0);//YAW轴速度环	
 
 	float PID_P_6020_turn[3] = {   1.0f,   0.0f,   0.0f   };

@@ -14,7 +14,7 @@ float out = 0;
 float target_ramp(float now, float target)
 {
     
-    float step = 0.1f;
+    float step = 0.35f;
 
     if (!init)
     {
@@ -35,3 +35,4 @@ float target_ramp(float now, float target)
 
     return out;
 }
+

@@ -16,11 +16,11 @@ void MOTOR_PID_Boomerang_INIT(MOTOR_Typedef *motor)
 	PID_init(&ALL_MOTOR.DJI_2006_Yaw.PID_P, PID_POSITION,PID_P_Yaw, 700, 10);//YAW轴视觉位置环
 	PID_init(&ALL_MOTOR.DJI_2006_Yaw.PID_S, PID_POSITION,PID_S_Yaw, 10000, 0);//YAW轴速度环	
 
-	float PID_P_6020_turn[3] = {   1.0f,   0.0001f,   0.0f   };
-	float PID_S_6020_turn[3] = {   60.0f,   0.0f,   0.0f  };
+	float PID_P_6020_turn[3] = {   1.0f,   0.0001f,   5.0f   };
+	float PID_S_6020_turn[3] = {   50.0f,   0.0f,   0.0f  };
 
-	PID_init(&ALL_MOTOR.DJI_6020_turn.PID_P, PID_POSITION,PID_P_6020_turn, 180, 10);//6020角度环
-	PID_init(&ALL_MOTOR.DJI_6020_turn.PID_S, PID_POSITION,PID_S_6020_turn, 15000, 10);//6020速度环
+	PID_init(&ALL_MOTOR.DJI_6020_turn.PID_P, PID_POSITION,PID_P_6020_turn, 180, 20);//6020角度环
+	PID_init(&ALL_MOTOR.DJI_6020_turn.PID_S, PID_POSITION,PID_S_6020_turn, 16000, 10);//6020速度环
 
 	DJI_2006_trigger_angle_init=ALL_MOTOR.DJI_2006_Trigger.DATA.Angle_now;
 }

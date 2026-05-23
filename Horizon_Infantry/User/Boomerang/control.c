@@ -19,7 +19,7 @@ uint8_t pin_switch_down=0, pin_switch_up=0,pin_switch_power=0;
 	uint16_t angles7[] = {450,713};
 	uint16_t time_ms = 1000; 
 	// uint8_t  b = 1;
-	 int32_t  a = 2;
+	 int32_t  a = 10;
 	// uint8_t  c = 1;
 	// uint8_t  d = 1;
 	// uint8_t  e = 1;
@@ -32,7 +32,7 @@ uint8_t pin_switch_down=0, pin_switch_up=0,pin_switch_power=0;
 
 	
 	uint8_t  first = 1;
-	uint8_t  second = 1;
+	uint8_t  second = 0;
 	uint8_t  third = 0;
 	uint8_t  forth = 0;
 	//uint8_t  fifth = 0;
@@ -56,13 +56,13 @@ void Control(uint8_t mod)
 	switch(mod)
 	{
 		case 1://基于裁判系统信息的全自动模式
-			Control_Referee( User_data);
+			Control_Referee( &User_data);
 			break;
 		case 3://初始（遥控器拨盘位于中间）测试模式
 			Control_test(DJI_3508_Pull_test);
 			break;
 		case 2://手动模式射击		
-			ALL_MOTOR.DJI_2006_Trigger.DATA.Aim -= WHW_V_DBUS.Remote.CH3_int16 * 0.5f;
+			ALL_MOTOR.DJI_2006_Trigger.DATA.Aim -= WHW_V_DBUS.Remote.CH3_int16 * 0.4f;
 			ALL_MOTOR.DJI_2006_Yaw.DATA.Aim -= WHW_V_DBUS.Remote.CH2_int16 * 0.5;
 			ALL_MOTOR.DJI_3508_Pull.DATA.Aim += WHW_V_DBUS.Remote.CH1_int16 * 0.5f;
 			break;
@@ -85,10 +85,10 @@ uint32_t  Angle_To_CCR(float angle)
 	return (uint32_t)((pulse_width / 20.0) * 20000); // ARR+1 = 19999+1=20000
 }		
 
-void Control_Referee( User_Data_T User_data)
+void Control_Referee( User_Data_T* User_data)
 {
-	//检测飞镖闸门状态
-	switch(User_data.dart_client_cmd.dart_launch_opening_status)
+	//检测飞镖闸门状0态
+	switch((*(User_data)).dart_client_cmd.dart_launch_opening_status)
 	{
 		case 1:
 			break;
@@ -124,9 +124,9 @@ void Control_Referee( User_Data_T User_data)
 				case 1:
 					//windmill(state, User_data);
 					ControlServo(state_launch, User_data);
+					osDelay(30000);//防止前两发镖打出后及时进行三四发镖的发射
 					switch(second){
 						case 1:
-						case 2:
 							state_launch = 1;
 							break;
 						case 0:
@@ -323,28 +323,27 @@ void windmill(uint8_t mod, User_Data_T User_data)
 }
 	
 //适用于原始换弹的飞镖全自动流程（舵机角度与原始换弹共用，试用前需查看更改）
-void ControlServo(uint8_t mod, User_Data_T User_data)
+void ControlServo(uint8_t mod, User_Data_T* User_data)
 	{
-		ALL_MOTOR.DJI_2006_Yaw.DATA.Aim=DJI_2006_trigger_angle_init;
 		switch(mod)
 		{
 			case 1://第一发和第二发
 				if(first==1){
 					//电磁铁上电
-					HAL_GPIO_WritePin(GPIOC ,GPIO_PIN_6 ,GPIO_PIN_SET);
+					HAL_GPIO_WritePin(GPIOC ,GPIO_PIN_6 ,GPIO_PIN_RESET);
 					// //切换目标
 					// if(User_data.dart_info.dart_selected_target == 1){
 					// 	ALL_MOTOR.DJI_2006_Yaw.DATA.Aim = -20000;
 					// 	state_now=1;
 					// }
-					//视觉标定
-					if(VisionRxData.Data.x0>10){
-						ALL_MOTOR.DJI_2006_Yaw.DATA.Aim -= 200.0;
-						return;
-					}else if(VisionRxData.Data.x0<-10){
-						ALL_MOTOR.DJI_2006_Yaw.DATA.Aim += 200.0;
-						return;
-					}
+					// //视觉标定
+					// if(VisionRxData.Data.x0>10){
+					// 	ALL_MOTOR.DJI_2006_Yaw.DATA.Aim -= 200.0;
+					// 	return;
+					// }else if(VisionRxData.Data.x0<-10){
+					// 	ALL_MOTOR.DJI_2006_Yaw.DATA.Aim += 200.0;
+					// 	return;
+					// }
 					//初始化舵机位置
 					//Servo_SetAngle(&htim12, TIM_CHANNEL_2, 102.0f);
 					//ServoMoveMulti(3, ids, angles, time_ms);
@@ -383,7 +382,7 @@ void ControlServo(uint8_t mod, User_Data_T User_data)
 									ALL_MOTOR.DJI_6020_turn.DATA.Aim = 4000;
 									osDelay(500);
 									ServoMoveMulti(2, ids, angles4, time_ms);
-									second = 2;
+									second = 1;
 									first=0;
 								// for (int i = 0; i < 5; i++) {
 								// 	first = 0;
@@ -409,7 +408,15 @@ void ControlServo(uint8_t mod, User_Data_T User_data)
 							break;
 					}
 				}
-				if(second ==2){
+				if(second ==1){
+					//视觉标定
+					// if(VisionRxData.Data.x0>10){
+					// 	ALL_MOTOR.DJI_2006_Yaw.DATA.Aim -= 200.0;
+					// 	return;
+					// }else if(VisionRxData.Data.x0<-10){
+					// 	ALL_MOTOR.DJI_2006_Yaw.DATA.Aim += 200.0;
+					// 	return;
+					// }
 					switch(pin_switch_down)
 					{
 						case 1:
@@ -419,16 +426,16 @@ void ControlServo(uint8_t mod, User_Data_T User_data)
 							ALL_MOTOR.DJI_3508_Pull.DATA.Aim -=0;
 							osDelay(25);
 							//第二发装填完成
-							HAL_GPIO_WritePin(GPIOC ,GPIO_PIN_6 ,GPIO_PIN_RESET);
+							HAL_GPIO_WritePin(GPIOC ,GPIO_PIN_6 ,GPIO_PIN_SET);
 							osDelay(200);
-							HAL_GPIO_WritePin(GPIOC ,GPIO_PIN_6 ,GPIO_PIN_SET);//电磁铁重新上电
+							HAL_GPIO_WritePin(GPIOC ,GPIO_PIN_6 ,GPIO_PIN_RESET);//电磁铁重新上电
 							switch(pin_switch_up)
 							{
 								case 1:
 									ALL_MOTOR.DJI_3508_Pull.DATA.Aim +=600.0;
 									break;
 								case 0:
-									if(User_data.dart_info.dart_remaining_time <= 2){
+									if((*(User_data)).dart_info.dart_remaining_time <= 2){
 
 									}else{
 										ALL_MOTOR.DJI_3508_Pull.DATA.Aim +=0;
@@ -470,14 +477,14 @@ void ControlServo(uint8_t mod, User_Data_T User_data)
 					// 	ALL_MOTOR.DJI_2006_Yaw.DATA.Aim = 7000;
 					// 	state_now=5;
 					// }
-					//视觉标定
-					if(VisionRxData.Data.x0>10){
-						ALL_MOTOR.DJI_2006_Yaw.DATA.Aim -= 200.0;
-						return;
-					}else if(VisionRxData.Data.x0<-10){
-						ALL_MOTOR.DJI_2006_Yaw.DATA.Aim += 200.0;
-						return;
-					}
+					// //视觉标定
+					// if(VisionRxData.Data.x0>10){
+					// 	ALL_MOTOR.DJI_2006_Yaw.DATA.Aim -= 200.0;
+					// 	return;
+					// }else if(VisionRxData.Data.x0<-10){
+					// 	ALL_MOTOR.DJI_2006_Yaw.DATA.Aim += 200.0;
+					// 	return;
+					// }
 					switch(pin_switch_down)
 					{
 						case 1:
@@ -487,16 +494,16 @@ void ControlServo(uint8_t mod, User_Data_T User_data)
 							ALL_MOTOR.DJI_3508_Pull.DATA.Aim -=0;
 							osDelay(25);
 							//第二发装填完成
-							HAL_GPIO_WritePin(GPIOC ,GPIO_PIN_6 ,GPIO_PIN_RESET);
+							HAL_GPIO_WritePin(GPIOC ,GPIO_PIN_6 ,GPIO_PIN_SET);
 							osDelay(200);
-							HAL_GPIO_WritePin(GPIOC ,GPIO_PIN_6 ,GPIO_PIN_SET);//电磁铁重新上电
+							HAL_GPIO_WritePin(GPIOC ,GPIO_PIN_6 ,GPIO_PIN_RESET);//电磁铁重新上电
 							switch(pin_switch_up)
 							{
 								case 1:
 									ALL_MOTOR.DJI_3508_Pull.DATA.Aim +=600.0;
 									break;
 								case 0:
-									if(User_data.dart_info.dart_remaining_time <= 2){
+									if((*(User_data)).dart_info.dart_remaining_time <= 2){
 
 									}else{
 										ALL_MOTOR.DJI_3508_Pull.DATA.Aim +=0;
@@ -531,6 +538,14 @@ void ControlServo(uint8_t mod, User_Data_T User_data)
 					}
 				}
 				if(forth ==1){
+					//视觉标定
+					// if(VisionRxData.Data.x0>10){
+					// 	ALL_MOTOR.DJI_2006_Yaw.DATA.Aim -= 200.0;
+					// 	return;
+					// }else if(VisionRxData.Data.x0<-10){
+					// 	ALL_MOTOR.DJI_2006_Yaw.DATA.Aim += 200.0;
+					// 	return;
+					// }
 					switch(pin_switch_down){
 						case 1:
 							ALL_MOTOR.DJI_3508_Pull.DATA.Aim -=300.0;
@@ -539,13 +554,13 @@ void ControlServo(uint8_t mod, User_Data_T User_data)
 							ALL_MOTOR.DJI_3508_Pull.DATA.Aim -=0;
 							osDelay(25);
 							//第四发装填完成
-							HAL_GPIO_WritePin(GPIOC ,GPIO_PIN_6 ,GPIO_PIN_RESET);
+							HAL_GPIO_WritePin(GPIOC ,GPIO_PIN_6 ,GPIO_PIN_SET);
 							switch(pin_switch_up){
 								case 1:
 									ALL_MOTOR.DJI_3508_Pull.DATA.Aim +=600.0;
 									break;
 								case 0:
-									if(User_data.dart_info.dart_remaining_time <= 2){
+									if((*(User_data)).dart_info.dart_remaining_time <= 2){
 
 									}else{
 										ALL_MOTOR.DJI_3508_Pull.DATA.Aim +=0;
@@ -620,7 +635,7 @@ void Control_test(uint8_t mod)
 	switch(mod)
 	{
 		case 1://测试，确定机械臂转动到镖的等待位置的编码器值
-			ALL_MOTOR.DJI_6020_turn.DATA.Aim = 1365;
+			ALL_MOTOR.DJI_6020_turn.DATA.Aim = 3500;
 			break;
 		case 2://测试，确定发射力度标到基地与前哨的编码器值
 			switch(pin_switch_power)
@@ -634,21 +649,28 @@ void Control_test(uint8_t mod)
 			}
 			break;
 		case 3://测试，视觉标定的双环速控参数
-			ALL_MOTOR.DJI_2006_Yaw.DATA.Aim -= a;
-			// if(VisionRxData.Data.x0>50){
-			// 	ALL_MOTOR.DJI_2006_Yaw.DATA.Aim -= 2.0;
-			// }else if(VisionRxData.Data.x0<-50){
-			// 	ALL_MOTOR.DJI_2006_Yaw.DATA.Aim += 2.0;
-			// }
+			// ALL_MOTOR.DJI_2006_Yaw.DATA.Aim -= a;
+			ALL_MOTOR.DJI_2006_Yaw.DATA.Aim = 0;
 			break;
 		case 4://测试，确定同步带下降与上升速度
-			switch(pin_switch_up)
+			switch(pin_switch_down)
 			{
 				case  1:
-					ALL_MOTOR.DJI_3508_Pull.DATA.Aim += 600;
+					ALL_MOTOR.DJI_3508_Pull.DATA.Aim = -850.0;
 					break;
 				case 0:
-					ALL_MOTOR.DJI_3508_Pull.DATA.Aim +=0.0;
+					ALL_MOTOR.DJI_3508_Pull.DATA.Aim =0.0;
+					switch(pin_switch_up)
+					{
+						case  1:
+							ALL_MOTOR.DJI_3508_Pull.DATA.Aim = 2550.0;
+							break;
+						case 0:
+							ALL_MOTOR.DJI_3508_Pull.DATA.Aim =0.0;
+							break;
+						default:
+							break;
+					}
 					break;
 			}
 			break;
@@ -661,19 +683,19 @@ void Control_test(uint8_t mod)
 			break;
 		case 6://测试第二发换弹流程与时间
 			//将机械臂移动到第二发镖的等待位置
-			ALL_MOTOR.DJI_6020_turn.DATA.Aim = 3000;
-			osDelay(500);
+			// ALL_MOTOR.DJI_6020_turn.DATA.Aim = 3000;
+			// osDelay(500);
 			//吸取飞镖
 			ServoMoveMulti(2, ids, angles, time_ms);
-			osDelay(1000);
-			ServoMoveMulti(2, ids, angles2, time_ms);
-			osDelay(1000);
-			ServoMoveMulti(2, ids, angles3, time_ms);
-			osDelay(1000);
-			//机械臂回到待装填位置
-			ALL_MOTOR.DJI_6020_turn.DATA.Aim = 4000;
-			osDelay(500);
-			ServoMoveMulti(2, ids, angles4, time_ms);
+			 osDelay(1000);
+			// ServoMoveMulti(2, ids, angles2, time_ms);
+			// osDelay(1000);
+			// ServoMoveMulti(2, ids, angles3, time_ms);
+			// osDelay(1000);
+			// //机械臂回到待装填位置
+			// ALL_MOTOR.DJI_6020_turn.DATA.Aim = 4000;
+			// osDelay(500);
+			// ServoMoveMulti(2, ids, angles4, time_ms);
 			break;
 		case 7://测试第三发换弹流程与时间
 			//将机械臂移到第三发镖等待位置
@@ -687,7 +709,7 @@ void Control_test(uint8_t mod)
 			ServoMoveMulti(2, ids, angles3, time_ms);
 			osDelay(1000);
 			//机械臂回到待装填位置
-			ALL_MOTOR.DJI_6020_turn.DATA.Aim = 4000;
+			ALL_MOTOR.DJI_6020_turn.DATA.Aim = 3500;
 			osDelay(500);
 			ServoMoveMulti(2, ids, angles4, time_ms);
 			break;
@@ -703,7 +725,7 @@ void Control_test(uint8_t mod)
 			ServoMoveMulti(2, ids, angles3, time_ms);
 			osDelay(1000);
 			//机械臂回到待装填位置
-			ALL_MOTOR.DJI_6020_turn.DATA.Aim = 4000;
+			ALL_MOTOR.DJI_6020_turn.DATA.Aim = 3500;
 			osDelay(500);
 			ServoMoveMulti(2, ids, angles4, time_ms);
 			break;

@@ -123,7 +123,7 @@ void StartRobotUITask(void const * argument)
     }
 }
 
-//接收视觉数据
+//接收并处理视觉数据
 void StartMoveTask(void const * argument)
 {
     portTickType currentTimeMove;
@@ -135,10 +135,12 @@ void StartMoveTask(void const * argument)
         {
             case 0:
                 //离线
+                ALL_MOTOR.DJI_2006_Yaw.DATA.Aim = VisionRxData.Data.x0;
                 break;
             case 1:
                 //在线
                 Vision_Tx_Data(User_data.dart_info.dart_selected_target);
+                ALL_MOTOR.DJI_2006_Yaw.DATA.Aim = 0;
                 break;
             case 2:
                 //离线检测出错
@@ -158,6 +160,7 @@ void StartDefiantTask(void const * argument)
 
     for(;;)
     {
+        ALL_MOTOR.DJI_2006_Yaw.DATA.Aim=DJI_2006_trigger_angle_init;
         Boomerang_task();
         osDelay(2);
     }
@@ -329,21 +332,21 @@ void BSP_UART_IRQHandler(UART_HandleTypeDef *huart)
         Referee_System_Frame_Update(pData,256);
     }
 
-    if(huart->Instance ==USART1)//调试串口
-    {
-		//数据处理
-		uint8_t data_length_1;
-        if (RESET != __HAL_UART_GET_FLAG(&huart1, UART_FLAG_IDLE))
-        {
-            __HAL_UART_CLEAR_IDLEFLAG(&huart1);  //清除空闲中断标志（否则会一直不断进入中断）
-            // 下面进行空闲中断相关处理
-            HAL_UART_DMAStop(&huart1);//暂时停止本次DMA传输，进行数据处理
+    // if(huart->Instance ==USART1)//调试串口
+    // {
+	// 	//数据处理
+	// 	uint8_t data_length_1;
+    //     if (RESET != __HAL_UART_GET_FLAG(&huart1, UART_FLAG_IDLE))
+    //     {
+    //         __HAL_UART_CLEAR_IDLEFLAG(&huart1);  //清除空闲中断标志（否则会一直不断进入中断）
+    //         // 下面进行空闲中断相关处理
+    //         HAL_UART_DMAStop(&huart1);//暂时停止本次DMA传输，进行数据处理
             
-            data_length_1 = BUFFER_SIZE_1 - __HAL_DMA_GET_COUNTER(&hdma_usart1_rx);//计算接收到的数据长度
-		    memset((uint8_t *)RX, 0, data_length_1);
+    //         data_length_1 = BUFFER_SIZE_1 - __HAL_DMA_GET_COUNTER(&hdma_usart1_rx);//计算接收到的数据长度
+	// 	    memset((uint8_t *)RX, 0, data_length_1);
 
-            HAL_UART_Receive_DMA(&huart1, (uint8_t *)RX, 20);  //重启开始DMA传输
-        }
-    }
+    //         HAL_UART_Receive_DMA(&huart1, (uint8_t *)RX, 20);  //重启开始DMA传输
+    //     }
+    // }
 }
 

@@ -40,7 +40,7 @@ extern CONTAL_Typedef RUI_V_CONTAL;
 
 extern User_Data_T User_data;
 
-extern uint8_t RX[20];
+//extern uint8_t RX[20];
 
 extern MOTOR_Typedef ALL_MOTOR;
 

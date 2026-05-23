@@ -30,8 +30,8 @@ void windmill(uint8_t mod, User_Data_T usr_data);
 //void ServoMotorModeWrite(uint8_t id, uint8_t mode, uint8_t turn_mode, int16_t speed) ;
 //void ServoPosRead(uint8_t id);
 void Servo_SetAngle(TIM_HandleTypeDef *htim, uint32_t Channel, float angle);
-void Control_Referee( User_Data_T User_data);
-void ControlServo(uint8_t mod, User_Data_T User_data);
+void Control_Referee( User_Data_T *User_data);
+void ControlServo(uint8_t mod, User_Data_T *User_data);
 void turn_target(uint8_t mod,User_Data_T User_data,float Aim_base,float Aim_outpost);
 void Control_test(uint8_t mod);
 

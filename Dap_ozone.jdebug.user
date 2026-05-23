@@ -6,21 +6,27 @@ GraphedExpression="(((ALL_MOTOR).DJI_3508_Pull).DATA).Angle_Infinite", DisplayFo
 GraphedExpression="(((ALL_MOTOR).DJI_2006_Yaw).DATA).Angle_Infinite", Color=#b14f0d, Show=0
 GraphedExpression="(((ALL_MOTOR).DJI_2006_Yaw).DATA).Angle_now", Color=#b3c38e, Show=0
 GraphedExpression="(((ALL_MOTOR).DJI_3508_Pull).DATA).Angle_now", DisplayFormat=DISPLAY_FORMAT_DEC, Color=#ab7b05
-OpenDocument="SEGGER_RTT_printf.c", FilePath="D:/STM32Project/Horizon_2026_Leg_gimbal-main/Horizon_Infantry/Middlewares/SEGGER_RTT/RTT/SEGGER_RTT_printf.c", Line=414
+OpenDocument="serial_servo.c", FilePath="D:/STM32Project/Horizon_2026_Leg_gimbal-main/Horizon_Infantry/User/Boomerang/serial_servo.c", Line=0
+OpenDocument="user_lib.c", FilePath="D:/STM32Project/Horizon_2026_Leg_gimbal-main/Horizon_Infantry/User/Algorithm/user_lib.c", Line=12
+OpenDocument="control.c", FilePath="D:/STM32Project/Horizon_2026_Leg_gimbal-main/Horizon_Infantry/User/Boomerang/control.c", Line=0
+OpenDocument="main.c", FilePath="D:/STM32Project/Horizon_2026_Leg_gimbal-main/Horizon_Infantry/Core/Src/main.c", Line=75
+OpenDocument="tasks.c", FilePath="D:/STM32Project/Horizon_2026_Leg_gimbal-main/Horizon_Infantry/Middlewares/Third_Party/FreeRTOS/Source/tasks.c", Line=3659
+OpenDocument="RUI_DBUS.c", FilePath="D:/STM32Project/Horizon_2026_Leg_gimbal-main/Horizon_Infantry/User/Bsp/RUI_DBUS.c", Line=33
+OpenDocument="SEGGER_RTT_printf.c", FilePath="D:/STM32Project/Horizon_2026_Leg_gimbal-main/Horizon_Infantry/Middlewares/SEGGER_RTT/RTT/SEGGER_RTT_printf.c", Line=104
 OpenDocument="arm_mat_mult_f32.c", FilePath="D:/STM32Project/Horizon_2026_Leg_gimbal-main/Horizon_Infantry/Middlewares/CMSIS/DSP/Src/MatrixFunctions/arm_mat_mult_f32.c", Line=965
-OpenDocument="stm32f4xx_hal_spi.c", FilePath="D:/STM32Project/Horizon_2026_Leg_gimbal-main/Horizon_Infantry/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_spi.c", Line=1356
-OpenDocument="stm32f4xx_it.c", FilePath="D:/STM32Project/Horizon_2026_Leg_gimbal-main/Horizon_Infantry/Core/Src/stm32f4xx_it.c", Line=120
+OpenDocument="stm32f4xx_hal_spi.c", FilePath="D:/STM32Project/Horizon_2026_Leg_gimbal-main/Horizon_Infantry/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_spi.c", Line=1292
+OpenDocument="stm32f4xx_it.c", FilePath="D:/STM32Project/Horizon_2026_Leg_gimbal-main/Horizon_Infantry/Core/Src/stm32f4xx_it.c", Line=93
 OpenDocument="Vision.h", FilePath="D:/STM32Project/Horizon_2026_Leg_gimbal-main/Horizon_Infantry/User/Bsp/inc/Vision.h", Line=0
-OpenDocument="All_Init.c", FilePath="D:/STM32Project/Horizon_2026_Leg_gimbal-main/Horizon_Infantry/User/Start/All_Init.c", Line=14
-OpenDocument="control.c", FilePath="D:/STM32Project/Horizon_2026_Leg_gimbal-main/Horizon_Infantry/User/Boomerang/control.c", Line=328
-OpenDocument="WHW_IRQN.c", FilePath="D:/STM32Project/Horizon_2026_Leg_gimbal-main/Horizon_Infantry/User/Start/WHW_IRQN.c", Line=0
-OpenDocument="main.c", FilePath="D:/STM32Project/Horizon_2026_Leg_gimbal-main/Horizon_Infantry/Core/Src/main.c", Line=61
+OpenDocument="All_Init.c", FilePath="D:/STM32Project/Horizon_2026_Leg_gimbal-main/Horizon_Infantry/User/Start/All_Init.c", Line=26
+OpenDocument="Boomerang_task.c", FilePath="D:/STM32Project/Horizon_2026_Leg_gimbal-main/Horizon_Infantry/User/App/Boomerang_task.c", Line=0
+OpenDocument="WHW_IRQN.c", FilePath="D:/STM32Project/Horizon_2026_Leg_gimbal-main/Horizon_Infantry/User/Start/WHW_IRQN.c", Line=285
+OpenDocument="Vision.c", FilePath="D:/STM32Project/Horizon_2026_Leg_gimbal-main/Horizon_Infantry/User/Bsp/Vision.c", Line=15
 OpenToolbar="Debug", Floating=0, x=0, y=0
-OpenWindow="Source Files", DockArea=LEFT, x=0, y=1, w=475, h=680, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0
-OpenWindow="Disassembly", DockArea=RIGHT, x=0, y=0, w=503, h=216, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0
+OpenWindow="Source Files", DockArea=LEFT, x=0, y=1, w=475, h=638, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0
+OpenWindow="Disassembly", DockArea=RIGHT, x=0, y=0, w=503, h=324, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0
 OpenWindow="Memory 1", DockArea=BOTTOM, x=3, y=0, w=210, h=395, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0, EditorAddress=0x20000268
-OpenWindow="Watched Data 1", DockArea=RIGHT, x=0, y=1, w=503, h=881, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0
-OpenWindow="Functions", DockArea=LEFT, x=0, y=0, w=475, h=417, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0
+OpenWindow="Watched Data 1", DockArea=RIGHT, x=0, y=1, w=503, h=773, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0
+OpenWindow="Functions", DockArea=LEFT, x=0, y=0, w=475, h=459, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0
 OpenWindow="Data Sampling", DockArea=BOTTOM, x=1, y=0, w=399, h=395, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0, VisibleTab=0, UniformSampleSpacing=0
 OpenWindow="Timeline", DockArea=BOTTOM, x=2, y=0, w=1626, h=395, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=1, DataPaneShown=1, PowerPaneShown=0, CodePaneShown=0, PinCursor="Cursor Movable", TimePerDiv="1 s / Div", TimeStampFormat="Time", DataGraphDrawAsPoints=0, DataGraphLegendShown=1, DataGraphUniformSampleSpacing=0, DataGraphLegendPosition="1080;84", DataGraphShowNamesAtCursor=0, PowerGraphDrawAsPoints=0, PowerGraphLegendShown=0, PowerGraphAvgFilterTime=Off, PowerGraphAvgFilterLen=Off, PowerGraphUniformSampleSpacing=0, PowerGraphLegendPosition="1409;-69", CodeGraphLegendShown=0, CodeGraphLegendPosition="1425;0"
 OpenWindow="Console", DockArea=BOTTOM, x=0, y=0, w=322, h=395, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0
@@ -38,3 +44,10 @@ WatchedExpression="pin_switch_up", RefreshRate=5, Window=Watched Data 1
 WatchedExpression="pin_switch_power", RefreshRate=5, Window=Watched Data 1
 WatchedExpression="a", RefreshRate=5, Window=Watched Data 1
 WatchedExpression="ALL_MOTOR", RefreshRate=5, Window=Watched Data 1
+WatchedExpression="RUI_V_DBUS", Window=Watched Data 1
+WatchedExpression="WHW_V_DBUS", Window=Watched Data 1
+WatchedExpression="VisionRx", Window=Watched Data 1
+WatchedExpression="VisionRxData", Window=Watched Data 1
+WatchedExpression="angles", RefreshRate=5, Window=Watched Data 1
+WatchedExpression="angles", Window=Watched Data 1
+WatchedExpression="angles", Window=Watched Data 1

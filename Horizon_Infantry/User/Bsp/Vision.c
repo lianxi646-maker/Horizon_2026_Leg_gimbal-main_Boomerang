@@ -37,8 +37,7 @@ void Vision_Rx_Data(uint8_t* buffer, VisionRxDataUnion *VisionRx)
 
     Union_temp.Data[1] = buffer[i++];
     Union_temp.Data[0] = buffer[i++];
-    VisionRx->Data.x0 = Union_temp.Data_u16;
-    VisionRx->Data.x0 -=426;
+    VisionRx->Data.x0 = Union_temp.Data_u16-640;
     VisionRx->Data.OffCounter = 0;
 }
 
@@ -67,10 +66,10 @@ uint8_t vision_offline()
     // if (VisionRxData.Data.isOnline == 1)
     // {
     VisionRxData.Data.OffCounter++;
-    if ( VisionRxData.Data.OffCounter > 50)
+    if ( VisionRxData.Data.OffCounter > 80)
     {
          //memset(&VisionRxData.Data, 0, sizeof(VisionRxData.Data));
-         VisionRxData.Data.OffCounter = 50;
+         VisionRxData.Data.OffCounter = 80;
         return 0; // 离线
     }
    

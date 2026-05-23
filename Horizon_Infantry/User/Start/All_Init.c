@@ -46,7 +46,7 @@ uint8_t Referee_Rx_Buf[2][REFEREE_RXFRAME_LENGTH];
 User_Data_T User_data;
 
 //测试
-uint8_t RX[20];
+//uint8_t RX[20];
 
 //电机
 MOTOR_Typedef ALL_MOTOR;
@@ -91,15 +91,12 @@ void Everying_Init(void)
 
     //串口初始化
     // HAL库的BUG处理，对于DMA需要先DeInit再Init，不然GG
-    HAL_DMA_DeInit(&hdma_usart1_rx);
-    HAL_DMA_DeInit(&hdma_usart1_tx);
-    HAL_DMA_Init(&hdma_usart1_rx);
-    HAL_DMA_Init(&hdma_usart1_tx);
-    HAL_UART_DMAStop(&huart1);
-    //使能串口空闲中断
-	__HAL_UART_ENABLE_IT(&huart1, UART_IT_IDLE);//上位机
-    //开启DMA接收
-    HAL_UART_Receive_DMA(&huart1,(uint8_t *)RX,20);
+     HAL_DMA_DeInit(&hdma_usart1_rx);
+		 HAL_DMA_DeInit(&hdma_usart1_tx);
+     HAL_DMA_Init(&hdma_usart1_rx);
+     HAL_DMA_Init(&hdma_usart1_tx);
+     HAL_UART_DMAStop(&huart1);
+    
 	
     HAL_DMA_DeInit(&hdma_usart3_rx);
     HAL_DMA_Init(&hdma_usart3_rx);
@@ -124,11 +121,14 @@ void Everying_Init(void)
     TIM4->CCR3 = 0;
 
     MOTOR_PID_Gimbal_INIT(&ALL_MOTOR);
+    //
     MOTOR_PID_Boomerang_INIT(&ALL_MOTOR);
     
     //扳机舵机PWM初始化
     HAL_TIM_PWM_Start(&htim1,TIM_CHANNEL_1);
     HAL_TIM_PWM_Start(&htim1,TIM_CHANNEL_2);
+    //电磁铁初始下电
+    HAL_GPIO_WritePin(GPIOC ,GPIO_PIN_6 ,GPIO_PIN_RESET);
 }
 
 void StartDefaultTask(void const * argument)

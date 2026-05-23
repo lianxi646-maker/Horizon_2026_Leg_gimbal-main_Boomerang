@@ -35,4 +35,14 @@ void ControlServo(uint8_t mod, User_Data_T *User_data);
 void turn_target(uint8_t mod,User_Data_T User_data,float Aim_base,float Aim_outpost);
 void Control_test(uint8_t mod);
 
+
+extern uint8_t ids[];          // 舵机ID列表
+extern	uint16_t angles[]; // 初始(吸附)
+extern	uint16_t angles2[]; //取下
+extern	uint16_t angles3[]; 	// 等待
+extern	uint16_t angles4[];	// 等待位置
+extern	uint16_t angles5[];
+extern	uint16_t angles6[];
+extern	uint16_t angles7[];
+extern	uint16_t time_ms; 
 #endif

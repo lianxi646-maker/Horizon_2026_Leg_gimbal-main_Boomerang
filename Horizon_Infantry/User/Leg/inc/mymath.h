@@ -19,5 +19,6 @@ float Discreteness_Sum(Discreteness_TypeDef *object, float input, float dt);
 float Discreteness_Diff(Discreteness_TypeDef *object, float input, float dt);
 void DJI_Torque_Control(hcan_t* hcan, uint16_t stdid, float t1, float t2, float t3, float t4);
 float Lowpass_Filter(float *last_output, float input, float alpha);
+float target_ramp(float now, float target);
 
 #endif // !__MYMATH_H

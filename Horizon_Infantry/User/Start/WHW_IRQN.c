@@ -69,6 +69,9 @@
 #include "control.h"
 #include "vision.h"
 #include "Boomerang_task.h"
+#include "mymath.h"
+#include "serial_servo.h"
+#include "arm.h"
 
 uint8_t move_G, move_S, move_C, move_P;
 float t1,t2,dt;
@@ -86,38 +89,7 @@ void StartRobotUITask(void const * argument)
         pin_switch_down = HAL_GPIO_ReadPin(GPIOF, GPIO_PIN_0);
         pin_switch_up = HAL_GPIO_ReadPin(GPIOE, GPIO_PIN_14);
         pin_switch_power = HAL_GPIO_ReadPin(GPIOI, GPIO_PIN_6);
-	 		// if(pin_switch_down == 0){
-            //     switch (k)
-            //     {
-            //     case 2:
-            //         HAL_GPIO_WritePin(GPIOC ,GPIO_PIN_6 ,GPIO_PIN_RESET);
-            //         break;
-            //     case 3:
-            //         HAL_GPIO_WritePin(GPIOI ,GPIO_PIN_6 ,GPIO_PIN_RESET);
-            //         break;
-            //     case 4:
-            //         HAL_GPIO_WritePin(GPIOI ,GPIO_PIN_7 ,GPIO_PIN_RESET);
-                
-            //     default:
-            //         HAL_GPIO_WritePin(GPIOC ,GPIO_PIN_6 ,GPIO_PIN_SET);
-            //         HAL_GPIO_WritePin(GPIOI ,GPIO_PIN_6 ,GPIO_PIN_SET);
-            //         HAL_GPIO_WritePin(GPIOI ,GPIO_PIN_7 ,GPIO_PIN_SET);
-            //         break;
-            //     }
-            //     // if(k=2){
-            //     //         HAL_GPIO_WritePin(GPIOC ,GPIO_PIN_6 ,GPIO_PIN_RESET);
-            //     //     }else{
-            //     //         HAL_GPIO_WritePin(GPIOC ,GPIO_PIN_6 ,GPIO_PIN_SET);
-            //     //     }
-            //     }else{
-            //         HAL_GPIO_WritePin(GPIOC ,GPIO_PIN_6 ,GPIO_PIN_SET);
-            //         HAL_GPIO_WritePin(GPIOI ,GPIO_PIN_6 ,GPIO_PIN_SET);
-            //         HAL_GPIO_WritePin(GPIOI ,GPIO_PIN_7 ,GPIO_PIN_SET);
-            //     }
-			//Control_Referee( User_data);
-            // Controlservo(WHW_V_DBUS.Remote.S1_u8);
-//			Control(1);
-            Control(WHW_V_DBUS.Remote.S1_u8);
+            // Control(WHW_V_DBUS.Remote.S1_u8);
 					// ALL_MOTOR.DJI_6020_turn.DATA.Aim = 0;
         osDelay(2);
     }
@@ -166,34 +138,27 @@ void StartDefiantTask(void const * argument)
     }
 }
 
-//陀螺仪解算与自瞄发送任务
+// 陀螺仪解算与自瞄发送任务
 void StartIMUTask(void const * argument)
 {
     portTickType currentTimeIMU;
     currentTimeIMU = xTaskGetTickCount();
 
-    static uint32_t dt_pc = 0;
-    static uint32_t INS_DWT_Count = 0;
-
-    //陀螺仪初始化
-    const float imu_temp_PID[3] = TEMPERATURE_PID;
-    PID_init(&imu_temp, PID_POSITION, imu_temp_PID,
-             TEMPERATURE_PID_MAX_OUT, TEMPERATURE_PID_MAX_IOUT);
-    IMU_QuaternionEKF_Init(10, 0.001f, 10000000, 1, 0.001f,0); //ekf初始化
-    HAL_TIM_PWM_Start(&htim10, TIM_CHANNEL_1);
-    while(BMI088_init()){}
-
+    osDelay(100);
     for(;;)
     {
-        INS_Task(&IMU_Data, &imu_temp);
-        // dt_pc = (uint32_t)DWT_GetDeltaT(&INS_DWT_Count);
         RUI_V_CONTAL.DWT_TIME.IMU_Dtime = DWT_GetDeltaT(&RUI_V_CONTAL.DWT_TIME.IMU_DWT_Count);
-        // CONTROL_VISION_SendData(IMU_Data.pitch, IMU_Data.yaw,
-        //                          RUI_V_CONTAL.DWT_TIME.IMU_Dtime, 1, 1);
-        // Vision_Tx_Data(IMU_Data.pitch, IMU_Data.yaw,
-        //                dt_pc, 1, 1);
 
-        osDelayUntil(&currentTimeIMU, 1);
+        // Motor_TurnTo_Angle(2829);
+        Motor_TurnTo_Angle(2829.0f);
+        // Motor_TurnTo_Angle(3400.0f);
+        // Arm_Action_Sequence(3425.0f);
+			// osDelay(1000);
+			//吸取飞镖
+			// ServoMoveMulti(2, ids, angles, time_ms);
+			// osDelay(1000);
+
+        osDelay(1);
     }
 }
 

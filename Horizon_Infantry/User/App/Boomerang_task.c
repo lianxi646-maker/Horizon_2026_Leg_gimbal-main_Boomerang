@@ -2,7 +2,7 @@
 uint32_t DJI_2006_trigger_angle_init=0;
 void MOTOR_PID_Boomerang_INIT(MOTOR_Typedef *motor)
 {
-    float PID_S_Pull[3] = {   20.0f,   3.0f,   0.0f  };
+    float PID_S_Pull[3] = {   15.0f,   0.7f,   0.0f  };
 	PID_init(&ALL_MOTOR.DJI_3508_Pull.PID_S, PID_POSITION,PID_S_Pull, 16384, 7000);//拉簧速度环
 	
 	float PID_P_Trigger[3] = {   0.17f,   0.0001f,   0.0f   };
@@ -16,11 +16,11 @@ void MOTOR_PID_Boomerang_INIT(MOTOR_Typedef *motor)
 	PID_init(&ALL_MOTOR.DJI_2006_Yaw.PID_P, PID_POSITION,PID_P_Yaw, 700, 10);//YAW轴视觉位置环
 	PID_init(&ALL_MOTOR.DJI_2006_Yaw.PID_S, PID_POSITION,PID_S_Yaw, 10000, 0);//YAW轴速度环	
 
-	float PID_P_6020_turn[3] = {   1.0f,   0.0f,   0.0f   };
-	float PID_S_6020_turn[3] = {   1.0f,   0.1f,   0.0f  };
+	float PID_P_6020_turn[3] = {   1.0f,   0.0001f,   0.0f   };
+	float PID_S_6020_turn[3] = {   60.0f,   0.0f,   0.0f  };
 
-	PID_init(&ALL_MOTOR.DJI_6020_turn.PID_P, PID_POSITION,PID_P_6020_turn, 200, 0);//6020角度环
-	PID_init(&ALL_MOTOR.DJI_6020_turn.PID_S, PID_POSITION,PID_S_6020_turn, 10000, 0);//6020速度环
+	PID_init(&ALL_MOTOR.DJI_6020_turn.PID_P, PID_POSITION,PID_P_6020_turn, 180, 10);//6020角度环
+	PID_init(&ALL_MOTOR.DJI_6020_turn.PID_S, PID_POSITION,PID_S_6020_turn, 15000, 10);//6020速度环
 
 	DJI_2006_trigger_angle_init=ALL_MOTOR.DJI_2006_Trigger.DATA.Angle_now;
 }
@@ -40,21 +40,21 @@ void Boomerang_task()
 	PID_calc(&ALL_MOTOR.DJI_6020_turn.PID_S,ALL_MOTOR.DJI_6020_turn.DATA.Speed_now,ALL_MOTOR.DJI_6020_turn.PID_P.out);
 
     /*CAN发送*/
-	DJI_Current_Ctrl(&hcan1,
-                     0x1FF,
-                     0,
-                     0,//(int16_t)ALL_MOTOR.DJI_2006_Yaw.PID_S.out,
-                     0,
-					 0);
-	DJI_Current_Ctrl(&hcan1,
-                     0x200,
-                     0,//(int16_t)ALL_MOTOR.DJI_3508_Pull.PID_S.out,
-                     (int16_t)ALL_MOTOR.DJI_2006_Trigger.PID_S.out,
-                     0,
-                     0);
+	// DJI_Current_Ctrl(&hcan1,
+    //                  0x1FF,
+    //                  0,
+    //                  0,//(int16_t)ALL_MOTOR.DJI_2006_Yaw.PID_S.out,
+    //                  0,
+	// 				 0);
+	// DJI_Current_Ctrl(&hcan1,
+    //                  0x200,
+    //                  (int16_t)ALL_MOTOR.DJI_3508_Pull.PID_S.out,
+    //                  0,//(int16_t)ALL_MOTOR.DJI_2006_Trigger.PID_S.out,
+    //                  0,
+    //                  0);
 	DJI_Current_Ctrl(&hcan2,
 					 0x1FE,
-					 (uint16_t)ALL_MOTOR.DJI_6020_turn.PID_S.out,
+					 (int16_t)ALL_MOTOR.DJI_6020_turn.PID_S.out,
 					 0,
 					 0,
 					 0);									 			 

@@ -269,6 +269,7 @@ virtualFolder:
         - path: ../User/Boomerang/control.c
         - path: ../User/Boomerang/serial_servo.c
         - path: ../User/Boomerang/vition.c
+        - path: ../User/Boomerang/arm.c
       folders: []
 dependenceList: []
 outDir: build

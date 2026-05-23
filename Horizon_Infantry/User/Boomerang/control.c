@@ -6,20 +6,20 @@
 #include "cmsis_os.h"
 #include "pid_temp.h"
 #include "All_Init.h"
-
+#include "mymath.h"
 
 uint8_t pin_switch_down=0, pin_switch_up=0,pin_switch_power=0;
 	uint8_t ids[] = {1, 2};          // 舵机ID列表
-	uint16_t angles[] = {450, 700}; // 初始
-	uint16_t angles2[] = {500, 630};
-	uint16_t angles3[] = {2000, 600};	// 目标
+	uint16_t angles[] = {50, 700}; // 初始(吸附)
+	uint16_t angles2[] = {30, 625};//取下
+	uint16_t angles3[] = {500, 580};	// 等待
 	uint16_t angles4[] = {730, 600};	// 等待位置
 	uint16_t angles5[] = {500, 650};
 	uint16_t angles6[] = {500,630};
 	uint16_t angles7[] = {450,713};
 	uint16_t time_ms = 1000; 
 	// uint8_t  b = 1;
-	 int32_t  a = 10;
+	 int32_t  a = 3450;
 	// uint8_t  c = 1;
 	// uint8_t  d = 1;
 	// uint8_t  e = 1;
@@ -59,7 +59,7 @@ void Control(uint8_t mod)
 			Control_Referee( &User_data);
 			break;
 		case 3://初始（遥控器拨盘位于中间）测试模式
-			Control_test(DJI_3508_Pull_test);
+			Control_test(DJI_6020_turn_test);
 			break;
 		case 2://手动模式射击		
 			ALL_MOTOR.DJI_2006_Trigger.DATA.Aim -= WHW_V_DBUS.Remote.CH3_int16 * 0.4f;
@@ -347,8 +347,10 @@ void ControlServo(uint8_t mod, User_Data_T* User_data)
 					//初始化舵机位置
 					//Servo_SetAngle(&htim12, TIM_CHANNEL_2, 102.0f);
 					//ServoMoveMulti(3, ids, angles, time_ms);
+					//初始化yaw位置
+					ALL_MOTOR.DJI_6020_turn.DATA.Aim = 3435;
 					__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, Angle_To_CCR(Servo_996R_angle_close));
-					osDelay(100);
+					//osDelay(100);
 					switch(pin_switch_down)
 					{
 						case 1:
@@ -369,8 +371,13 @@ void ControlServo(uint8_t mod, User_Data_T* User_data)
 									osDelay(500);
 									__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, Angle_To_CCR(Servo_996R_angle_close));//第一发打出
 									//将机械臂移动到第二发镖的等待位置
-									ALL_MOTOR.DJI_6020_turn.DATA.Aim = 3000;
-									osDelay(500);
+									for (; ; ) {
+										// ALL_MOTOR.DJI_6020_turn.DATA.Aim = target_ramp(ALL_MOTOR.DJI_6020_turn.DATA.Angle_Infinite, 2829);
+										osDelay(1);
+										if(fabsf(ALL_MOTOR.DJI_6020_turn.PID_P.error[0]) < 5)
+											break;
+									}
+									// osDelay(1000);
 									//吸取飞镖
 									ServoMoveMulti(2, ids, angles, time_ms);
 									osDelay(1000);
@@ -379,8 +386,12 @@ void ControlServo(uint8_t mod, User_Data_T* User_data)
 									ServoMoveMulti(2, ids, angles3, time_ms);
 									osDelay(1000);
 									//机械臂回到待装填位置
-									ALL_MOTOR.DJI_6020_turn.DATA.Aim = 4000;
-									osDelay(500);
+									for (; ; ) {
+										// ALL_MOTOR.DJI_6020_turn.DATA.Aim = target_ramp(ALL_MOTOR.DJI_6020_turn.DATA.Angle_Infinite, 3435);
+										osDelay(1);
+										if(fabsf(ALL_MOTOR.DJI_6020_turn.PID_P.error[0]) < 5)
+											break;
+									}
 									ServoMoveMulti(2, ids, angles4, time_ms);
 									second = 1;
 									first=0;
@@ -443,9 +454,12 @@ void ControlServo(uint8_t mod, User_Data_T* User_data)
 										__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, Angle_To_CCR(Servo_996R_angle_open));
 										osDelay(500);
 										__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, Angle_To_CCR(Servo_996R_angle_close));//第二发打出
-										//将机械臂移到第三发镖等待位置
-										ALL_MOTOR.DJI_6020_turn.DATA.Aim = 2000;
-										osDelay(500);
+										for (; ; ) {
+											// ALL_MOTOR.DJI_6020_turn.DATA.Aim = target_ramp(ALL_MOTOR.DJI_6020_turn.DATA.Angle_Infinite, 4067);
+											osDelay(1);
+											if(fabsf(ALL_MOTOR.DJI_6020_turn.PID_P.error[0]) < 5)
+												break;
+										}
 										//吸取第三发镖
 										ServoMoveMulti(2, ids, angles, time_ms);
 										osDelay(1000);
@@ -454,8 +468,12 @@ void ControlServo(uint8_t mod, User_Data_T* User_data)
 										ServoMoveMulti(2, ids, angles3, time_ms);
 										osDelay(1000);
 										//机械臂回到待装填位置
-										ALL_MOTOR.DJI_6020_turn.DATA.Aim = 4000;
-										osDelay(500);
+										for (; ; ) {
+											// ALL_MOTOR.DJI_6020_turn.DATA.Aim = target_ramp(ALL_MOTOR.DJI_6020_turn.DATA.Angle_Infinite, 3435);
+											osDelay(1);
+											if(fabsf(ALL_MOTOR.DJI_6020_turn.PID_P.error[0]) < 5)
+												break;
+										}
 										ServoMoveMulti(2, ids, angles4, time_ms);
 										second =0;
 										third = 1;
@@ -512,8 +530,12 @@ void ControlServo(uint8_t mod, User_Data_T* User_data)
 										osDelay(500);
 										__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, Angle_To_CCR(Servo_996R_angle_close));//第二发打出
 										//将机械臂移到第四发镖等待位置
-										ALL_MOTOR.DJI_6020_turn.DATA.Aim = 5000;
-										osDelay(500);
+										for (; ; ) {
+											// ALL_MOTOR.DJI_6020_turn.DATA.Aim = target_ramp(ALL_MOTOR.DJI_6020_turn.DATA.Angle_Infinite, 4621);
+											osDelay(1);
+											if(fabsf(ALL_MOTOR.DJI_6020_turn.PID_P.error[0]) < 5)
+												break;
+										}
 										//吸取第四发镖
 										ServoMoveMulti(2, ids, angles7, time_ms);
 										osDelay(1000);
@@ -522,8 +544,12 @@ void ControlServo(uint8_t mod, User_Data_T* User_data)
 										ServoMoveMulti(2, ids, angles3, time_ms);
 										osDelay(1000);
 										//机械臂回到待装填位置
-										ALL_MOTOR.DJI_6020_turn.DATA.Aim = 4000;
-										osDelay(500);
+										for (; ; ) {
+											// ALL_MOTOR.DJI_6020_turn.DATA.Aim = target_ramp(ALL_MOTOR.DJI_6020_turn.DATA.Angle_Infinite, 3435);
+											osDelay(1);
+											if(fabsf(ALL_MOTOR.DJI_6020_turn.PID_P.error[0]) < 5)
+												break;
+										}
 										ServoMoveMulti(2, ids, angles4, time_ms);
 										third = 0;
 										forth = 1;
@@ -635,7 +661,27 @@ void Control_test(uint8_t mod)
 	switch(mod)
 	{
 		case 1://测试，确定机械臂转动到镖的等待位置的编码器值
-			ALL_MOTOR.DJI_6020_turn.DATA.Aim = 3500;
+			// for (; ; ) {
+			// 	// ALL_MOTOR.DJI_6020_turn.DATA.Aim = target_ramp(ALL_MOTOR.DJI_6020_turn.DATA.Angle_Infinite, 2829);
+			// 	osDelay(1);
+			// 	if(fabsf(ALL_MOTOR.DJI_6020_turn.PID_P.error[0]) < 5)
+			// 		break;
+			// }
+			// // osDelay(1000);
+			// //吸取飞镖
+			// ServoMoveMulti(2, ids, angles, time_ms);
+			// osDelay(1000);
+			// ServoMoveMulti(2, ids, angles2, time_ms);
+			// osDelay(1000);
+			// ServoMoveMulti(2, ids, angles3, time_ms);
+			// osDelay(1000);
+			//机械臂回到待装填位置
+			// for (; ; ) {
+			// 	// ALL_MOTOR.DJI_6020_turn.DATA.Aim = target_ramp(ALL_MOTOR.DJI_6020_turn.DATA.Angle_Infinite, 3435);
+			// 	osDelay(1);
+			// 	if(fabsf(ALL_MOTOR.DJI_6020_turn.PID_P.error[0]) < 5)
+			// 		break;
+			// }
 			break;
 		case 2://测试，确定发射力度标到基地与前哨的编码器值
 			switch(pin_switch_power)
@@ -656,14 +702,14 @@ void Control_test(uint8_t mod)
 			switch(pin_switch_down)
 			{
 				case  1:
-					ALL_MOTOR.DJI_3508_Pull.DATA.Aim = -850.0;
+					ALL_MOTOR.DJI_3508_Pull.DATA.Aim = -2500.0;
 					break;
 				case 0:
 					ALL_MOTOR.DJI_3508_Pull.DATA.Aim =0.0;
 					switch(pin_switch_up)
 					{
 						case  1:
-							ALL_MOTOR.DJI_3508_Pull.DATA.Aim = 2550.0;
+							ALL_MOTOR.DJI_3508_Pull.DATA.Aim = 7000.0;
 							break;
 						case 0:
 							ALL_MOTOR.DJI_3508_Pull.DATA.Aim =0.0;
@@ -686,10 +732,12 @@ void Control_test(uint8_t mod)
 			// ALL_MOTOR.DJI_6020_turn.DATA.Aim = 3000;
 			// osDelay(500);
 			//吸取飞镖
-			ServoMoveMulti(2, ids, angles, time_ms);
-			 osDelay(1000);
-			// ServoMoveMulti(2, ids, angles2, time_ms);
+			ALL_MOTOR.DJI_6020_turn.DATA.Aim = a;
+			osDelay(500);
+			// ServoMoveMulti(2, ids, angles, time_ms);
 			// osDelay(1000);
+			ServoMoveMulti(2, ids, angles2, time_ms);
+			osDelay(1000);
 			// ServoMoveMulti(2, ids, angles3, time_ms);
 			// osDelay(1000);
 			// //机械臂回到待装填位置

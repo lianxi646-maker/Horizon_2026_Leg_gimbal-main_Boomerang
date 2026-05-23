@@ -1597,6 +1597,11 @@
               <FileType>1</FileType>
               <FilePath>..\User\Boomerang\vition.c</FilePath>
             </File>
+            <File>
+              <FileName>arm.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\User\Boomerang\arm.c</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>

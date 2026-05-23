@@ -149,14 +149,13 @@ void StartIMUTask(void const * argument)
     {
         RUI_V_CONTAL.DWT_TIME.IMU_Dtime = DWT_GetDeltaT(&RUI_V_CONTAL.DWT_TIME.IMU_DWT_Count);
 
-        // Motor_TurnTo_Angle(2829);
-        Motor_TurnTo_Angle(2829.0f);
-        // Motor_TurnTo_Angle(3400.0f);
-        // Arm_Action_Sequence(3425.0f);
-			// osDelay(1000);
-			//吸取飞镖
-			// ServoMoveMulti(2, ids, angles, time_ms);
-			// osDelay(1000);
+        Arm_Action_Sequence(2750.0f);
+        Arm_Action_Sequence(3350.0f);
+        Arm_Action_Sequence(4067.0f);
+        Arm_Action_Sequence(3350.0f);
+        Arm_Action_Sequence(4621.0f);
+        Arm_Action_Sequence(3350.0f);
+
 
         osDelay(1);
     }

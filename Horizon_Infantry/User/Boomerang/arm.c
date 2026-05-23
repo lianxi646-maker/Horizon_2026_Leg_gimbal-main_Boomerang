@@ -18,7 +18,7 @@ void Motor_TurnTo_Angle(float target_angle)
         osDelay(1);
 
         // 3. 判断是否到达目标
-        if (fabsf(ALL_MOTOR.DJI_6020_turn.PID_P.error[0]) < 5.0f)
+        if (fabsf(ALL_MOTOR.DJI_6020_turn.DATA.Angle_Infinite - target_angle) < 25.0f)
         {
             break;
         }
@@ -32,18 +32,16 @@ void Arm_Action_Sequence(float grap_angle)
     // 1️⃣ 云台/电机先转到初始位置
     Motor_TurnTo_Angle(grap_angle);
 
-    // osDelay(1000); // 等待稳定
-    // // 2️⃣ 执行三段舵机动作
-    // ServoMoveMulti(2, ids, angles, time_ms);
-    // osDelay(1000);
+    // 2️⃣ 执行三段舵机动作
+    ServoMoveMulti(2, ids, angles, time_ms);
+    osDelay(1000);
 
-    // ServoMoveMulti(2, ids, angles2, time_ms);
-    // osDelay(1000);
+    ServoMoveMulti(2, ids, angles2, time_ms);
+    osDelay(1000);
 
-    // ServoMoveMulti(2, ids, angles3, time_ms);
-    // osDelay(1000);
+    ServoMoveMulti(2, ids, angles3, time_ms);
+    osDelay(1000);
 
     // 3️⃣ 最后转到目标位置
-    // Motor_TurnTo_Angle(3435.0f);
-    // osDelay(1000);
+    Motor_TurnTo_Angle(3435.0f);
 }

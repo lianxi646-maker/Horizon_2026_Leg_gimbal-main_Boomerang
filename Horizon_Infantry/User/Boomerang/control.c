@@ -344,11 +344,9 @@ void ControlServo(uint8_t mod, User_Data_T* User_data)
 							ALL_MOTOR.DJI_3508_Pull.DATA.Aim =-2500.0;
 							break;
 						case 0:
-							ALL_MOTOR.DJI_3508_Pull.DATA.Aim =0;
 							switch(pin_switch_up)
 							{
 								case 1:
-									osDelay(300);
 									ALL_MOTOR.DJI_3508_Pull.DATA.Aim =7000.0;
 									break;
 								case 0:
@@ -374,7 +372,6 @@ void ControlServo(uint8_t mod, User_Data_T* User_data)
 							ALL_MOTOR.DJI_3508_Pull.DATA.Aim =-2500.0;
 							break;
 						case 0:
-							ALL_MOTOR.DJI_3508_Pull.DATA.Aim =0;
 							osDelay(25);
 							//第二发装填完成
 							Dart_put();//放下第二发镖
@@ -412,7 +409,6 @@ void ControlServo(uint8_t mod, User_Data_T* User_data)
 							ALL_MOTOR.DJI_3508_Pull.DATA.Aim =-2500.0;
 							break;
 						case 0:
-							ALL_MOTOR.DJI_3508_Pull.DATA.Aim =0;
 							osDelay(25);
 							//第三发装填完成
 							Dart_put();//放下第三发镖
@@ -422,7 +418,6 @@ void ControlServo(uint8_t mod, User_Data_T* User_data)
 									ALL_MOTOR.DJI_3508_Pull.DATA.Aim =7000.0;
 									break;
 								case 0:
-									ALL_MOTOR.DJI_3508_Pull.DATA.Aim =0;
 									if((*(User_data)).dart_info.dart_remaining_time <= 2){
 
 									}else{
@@ -447,7 +442,6 @@ void ControlServo(uint8_t mod, User_Data_T* User_data)
 							ALL_MOTOR.DJI_3508_Pull.DATA.Aim =-2500.0;
 							break;
 						case 0:
-							ALL_MOTOR.DJI_3508_Pull.DATA.Aim =0;
 							osDelay(25);
 							//第四发装填完成
 							Dart_put();//放下第四发镖
@@ -527,27 +521,37 @@ void Control_test(uint8_t mod)
 	switch(mod)
 	{
 		case 1://测试，确定机械臂转动到镖的等待位置的编码器值
-			// for (; ; ) {
-			// 	// ALL_MOTOR.DJI_6020_turn.DATA.Aim = target_ramp(ALL_MOTOR.DJI_6020_turn.DATA.Angle_Infinite, 2829);
-			// 	osDelay(1);
-			// 	if(fabsf(ALL_MOTOR.DJI_6020_turn.PID_P.error[0]) < 5)
-			// 		break;
-			// }
-			// // osDelay(1000);
-			// //吸取飞镖
-			// ServoMoveMulti(2, ids, angles, time_ms);
-			// osDelay(1000);
-			// ServoMoveMulti(2, ids, angles2, time_ms);
-			// osDelay(1000);
-			// ServoMoveMulti(2, ids, angles3, time_ms);
-			// osDelay(1000);
-			//机械臂回到待装填位置
-			// for (; ; ) {
-			// 	// ALL_MOTOR.DJI_6020_turn.DATA.Aim = target_ramp(ALL_MOTOR.DJI_6020_turn.DATA.Angle_Infinite, 3435);
-			// 	osDelay(1);
-			// 	if(fabsf(ALL_MOTOR.DJI_6020_turn.PID_P.error[0]) < 5)
-			// 		break;
-			// }
+			Motor_TurnTo_Angle(3435.0f);
+					switch(pin_switch_down)
+					{
+						case 1:
+							ALL_MOTOR.DJI_3508_Pull.DATA.Aim =-2500.0;
+							break;
+						case 0:
+							osDelay(25);
+							//第二发装填完成
+							Dart_put();//放下第二发镖
+							switch(pin_switch_up)
+							{
+								case 1:
+									ALL_MOTOR.DJI_3508_Pull.DATA.Aim =7000.0;
+									break;
+								case 0:
+									ALL_MOTOR.DJI_3508_Pull.DATA.Aim =0;
+										osDelay(300);
+										Dart_Trigger_Fire();//发射
+										Arm_Action_Sequence(4067.0f);//装填第三发
+										second =0;
+										third = 1;
+									break;
+								default:
+									break;
+								}
+							break;
+						default:
+							break;
+					}
+			
 			break;
 		case 2://测试，确定发射力度标到基地与前哨的编码器值
 			switch(pin_switch_power)

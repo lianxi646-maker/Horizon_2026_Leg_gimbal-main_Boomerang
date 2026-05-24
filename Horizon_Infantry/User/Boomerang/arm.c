@@ -62,6 +62,6 @@ void Dart_Grab_Action()
 void Dart_put()
 {
     HAL_GPIO_WritePin(GPIOC ,GPIO_PIN_6 ,GPIO_PIN_SET);//电磁铁下磁
-	osDelay(200);
+	osDelay(50);
 	HAL_GPIO_WritePin(GPIOC ,GPIO_PIN_6 ,GPIO_PIN_RESET);//电磁铁重新上磁
 }

@@ -40,18 +40,18 @@ void Boomerang_task()
 	PID_calc(&ALL_MOTOR.DJI_6020_turn.PID_S,ALL_MOTOR.DJI_6020_turn.DATA.Speed_now,ALL_MOTOR.DJI_6020_turn.PID_P.out);
 
     /*CAN发送*/
-	// DJI_Current_Ctrl(&hcan1,
-    //                  0x1FF,
-    //                  0,
-    //                  0,//(int16_t)ALL_MOTOR.DJI_2006_Yaw.PID_S.out,
-    //                  0,
-	// 				 0);
-	// DJI_Current_Ctrl(&hcan1,
-    //                  0x200,
-    //                  (int16_t)ALL_MOTOR.DJI_3508_Pull.PID_S.out,
-    //                  0,//(int16_t)ALL_MOTOR.DJI_2006_Trigger.PID_S.out,
-    //                  0,
-    //                  0);
+	DJI_Current_Ctrl(&hcan1,
+                     0x1FF,
+                     0,
+                     0,//(int16_t)ALL_MOTOR.DJI_2006_Yaw.PID_S.out,
+                     0,
+					 0);
+	DJI_Current_Ctrl(&hcan1,
+                     0x200,
+                     (int16_t)ALL_MOTOR.DJI_3508_Pull.PID_S.out,
+                     0,//(int16_t)ALL_MOTOR.DJI_2006_Trigger.PID_S.out,
+                     0,
+                     0);
 	DJI_Current_Ctrl(&hcan2,
 					 0x1FE,
 					 (int16_t)ALL_MOTOR.DJI_6020_turn.PID_S.out,

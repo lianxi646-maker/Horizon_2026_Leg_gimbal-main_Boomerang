@@ -88,6 +88,7 @@ void StartRobotUITask(void const * argument)
         RUI_V_CONTAL.DWT_TIME.RobotUI_Dtime = DWT_GetDeltaT(&RUI_V_CONTAL.DWT_TIME.RobotUI_DWT_Count);
              Control(WHW_V_DBUS.Remote.S1_u8);
 					// ALL_MOTOR.DJI_6020_turn.DATA.Aim = 0;
+                    
         osDelay(2);
     }
 }
@@ -108,7 +109,7 @@ void StartMoveTask(void const * argument)
                 break;
             case 1:
                 //在线
-                Vision_Tx_Data(User_data.dart_info.dart_selected_target);
+//                Vision_Tx_Data(User_data.dart_info.dart_info_bits.dart_selected_target);
                 ALL_MOTOR.DJI_2006_Yaw.DATA.Aim = 0;
                 break;
             case 2:
@@ -289,10 +290,9 @@ void BSP_UART_IRQHandler(UART_HandleTypeDef *huart)
 
     if(huart->Instance ==USART6)//裁判系统串口
     {
-				uint8_t *next_buf = (pData == Referee_Rx_Buf[0]) ? Referee_Rx_Buf[1] : Referee_Rx_Buf[0];
-        HAL_UARTEx_ReceiveToIdle_DMA(huart, next_buf, REFEREE_RXFRAME_LENGTH);
-        __HAL_DMA_DISABLE_IT(huart1.hdmarx, DMA_IT_HT);//关闭 DMA 半传中断
-        Referee_System_Frame_Update(pData,256);
+		Referee_System_Frame_Update(Referee_Rx_Buf, 256);
+	    HAL_UARTEx_ReceiveToIdle_DMA(&huart6, Referee_Rx_Buf, REFEREE_RXFRAME_LENGTH);//裁判系统串口
+        __HAL_DMA_DISABLE_IT(huart->hdmarx, DMA_IT_HT);
     }
 
     // if(huart->Instance ==USART1)//调试串口

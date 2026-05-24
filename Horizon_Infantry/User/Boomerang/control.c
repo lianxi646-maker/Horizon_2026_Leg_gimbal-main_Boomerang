@@ -36,12 +36,12 @@ uint8_t pin_switch_down=0, pin_switch_up=0,pin_switch_power=0;
 	uint8_t  second = 0;
 	uint8_t  third = 0;
 	uint8_t  forth = 0;
-	//uint8_t  fifth = 0;
+	uint8_t  fifth = 0;
 	uint8_t state_launch = 0;
 	uint8_t state_power = 0;
 	uint8_t state_power_mid_turn = 0;
 	uint8_t Servo_996R_angle_close = 50;
-	uint8_t Servo_996R_angle_open = 100;
+	uint8_t Servo_996R_angle_open = 110;
 	//uint8_t  load = 1;
 	//uint8_t state_now = 5;
 
@@ -86,64 +86,56 @@ uint32_t  Angle_To_CCR(float angle)
 	return (uint32_t)((pulse_width / 20.0) * 20000); // ARR+1 = 19999+1=20000
 }		
 
+uint8_t open_cnt = 0;
 void Control_Referee( User_Data_T* User_data)
-{
-	//检测飞镖闸门状0态
-	switch((*(User_data)).dart_client_cmd.dart_launch_opening_status)
+{	
+	static uint16_t dart_launch_opening_status_last = 0;
+	if (User_data->dart_client_cmd.dart_launch_opening_status == 0 && dart_launch_opening_status_last == 2) {
+		// 打开1次
+		open_cnt++;
+	}
+	dart_launch_opening_status_last = User_data->dart_client_cmd.dart_launch_opening_status;
+
+	//检测飞镖闸门状态
+	switch(open_cnt)
 	{
 		case 1:
+			state_launch = 1;
+			ControlServo(state_launch, User_data);
+			state_launch = 2;
 			break;
 		case 2:
-			// switch(state_power)
+			ControlServo(state_launch, User_data);
+			// open_cnt = 0;
+			break;
+		case 0:
+			// switch(state_launch)
 			// {
 			// 	case 0:
-			// 		osDelay(8000);
-			// 		state_power = 1;
+			// 		state_launch = 1;
 			// 		break;
 			// 	case 1:
-			// 		turn_target(state_power, User_data,10000, 20000);
-			// 		if(state_power_mid_turn == 0){
-			// 			state_power = 1;
-			// 		}else if(state_power_mid_turn == 1){
-			// 			state_power = 2;
+			// 		//windmill(state, User_data);
+			// 		ControlServo(state_launch, User_data);
+			// 		osDelay(30000);//防止前两发镖打出后及时进行三四发镖的发射
+			// 		switch(second){
+			// 			case 1:
+			// 				state_launch = 1;
+			// 				break;
+			// 			case 0:
+			// 				state_launch = 2;
+			// 				break;
+			// 			default:
+			// 				break;
 			// 		}
 			// 		break;
 			// 	case 2:
-			// 		turn_target(state_power, User_data,10000, 20000);
+			// 		//windmill(state, User_data);
+			// 		ControlServo(state_launch, User_data);
 			// 		break;
 			// 	default:
 			// 		break;
 			// }
-			break;
-		case 0:
-			switch(state_launch)
-			{
-				case 0:
-					osDelay(7000);
-					state_launch = 1;
-					break;
-				case 1:
-					//windmill(state, User_data);
-					ControlServo(state_launch, User_data);
-					osDelay(30000);//防止前两发镖打出后及时进行三四发镖的发射
-					switch(second){
-						case 1:
-							state_launch = 1;
-							break;
-						case 0:
-							state_launch = 2;
-							break;
-						default:
-							break;
-					}
-					break;
-				case 2:
-					//windmill(state, User_data);
-					ControlServo(state_launch, User_data);
-					break;
-				default:
-					break;
-			}
 				break;
 		default:
 			break;	
@@ -382,15 +374,12 @@ void ControlServo(uint8_t mod, User_Data_T* User_data)
 									break;
 								case 0:
 									ALL_MOTOR.DJI_3508_Pull.DATA.Aim =0;
-									if((*(User_data)).dart_info.dart_remaining_time <= 2){
-
-									}else{
+									
 										osDelay(300);
 										Dart_Trigger_Fire();//发射
 										Arm_Action_Sequence(4067.0f);//装填第三发
 										second =0;
 										third = 1;
-									}
 									break;
 								default:
 									break;
@@ -419,15 +408,11 @@ void ControlServo(uint8_t mod, User_Data_T* User_data)
 									break;
 								case 0:
 									ALL_MOTOR.DJI_3508_Pull.DATA.Aim =0;
-									if((*(User_data)).dart_info.dart_remaining_time <= 2){
-
-									}else{
 										osDelay(300);
 										Dart_Trigger_Fire();//发射
 										Arm_Action_Sequence(4621.0f);//装填第四发
 										third = 0;
 										forth = 1;
-									}
 									break;
 								default:
 									break;
@@ -452,12 +437,9 @@ void ControlServo(uint8_t mod, User_Data_T* User_data)
 									break;
 								case 0:
 									ALL_MOTOR.DJI_3508_Pull.DATA.Aim =0;
-									if((*(User_data)).dart_info.dart_remaining_time <= 2){
-
-									}else{
 										osDelay(300);
 									Dart_Trigger_Fire();//发射
-									}
+									open_cnt = 0;
 									break;
 								default:
 									break;

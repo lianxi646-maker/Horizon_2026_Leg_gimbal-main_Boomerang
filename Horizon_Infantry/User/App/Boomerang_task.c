@@ -39,6 +39,9 @@ void Boomerang_task()
 	PID_calc(&ALL_MOTOR.DJI_6020_turn.PID_P,ALL_MOTOR.DJI_6020_turn.DATA.Angle_Infinite,ALL_MOTOR.DJI_6020_turn.DATA.Aim);
 	PID_calc(&ALL_MOTOR.DJI_6020_turn.PID_S,ALL_MOTOR.DJI_6020_turn.DATA.Speed_now,ALL_MOTOR.DJI_6020_turn.PID_P.out);
 
+	if	(fabsf(ALL_MOTOR.DJI_6020_turn.DATA.Aim - 3425.0f) >= 2000.0f)
+		ALL_MOTOR.DJI_6020_turn.PID_S.out = 0;
+
     /*CAN发送*/
 	DJI_Current_Ctrl(&hcan1,
                      0x1FF,

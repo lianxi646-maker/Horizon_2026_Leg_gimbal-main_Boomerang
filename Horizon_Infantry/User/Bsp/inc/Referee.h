@@ -80,23 +80,9 @@ typedef struct __packed
     uint16_t ally_base_HP;
 } game_robot_HP_t;
 
-/* 0x0101 场地事件数据 */
 typedef struct __packed
 {
-    uint32_t supply_zone_status : 1;                 // bit 0: 己方补给区的占领状态
-    uint32_t reserved_1 : 1;                         // bit 1: 保留位
-    uint32_t supply_zone_status_rmul : 1;            // bit 2: 己方补给区的占领状态 RMUL
-    uint32_t small_energy_mechanism_status : 2;      // bit 3-4: 己方小能量机关的激活状态
-    uint32_t big_energy_mechanism_status : 2;        // bit 5-6: 己方大能量机关的激活状态
-    uint32_t central_highland_status : 2;            // bit 7-8: 己方中央高地的占领状态
-    uint32_t trapezoidal_highland_status : 2;        // bit 9-10: 己方梯形高地的占领状态
-    uint32_t dart_hit_time : 9;                      // bit 11-19: 对方飞镖最后击中己方前哨站或基地的时间
-    uint32_t dart_hit_target : 3;                    // bit 20-22: 对方飞镖最后击中的具体目标
-    uint32_t center_buff_status : 2;                 // bit 23-24: 中心增益点的占领状态 RMUL
-    uint32_t fortress_buff_status : 2;               // bit 25-26: 己方堡垒增益点的占领状态
-    uint32_t outpost_buff_status : 2;                // bit 27-28: 己方前哨站增益点的占领状态
-    uint32_t base_buff_status : 1;                   // bit 29: 己方基地增益点的占领状态
-    uint32_t reserved_2 : 2;                         // bit 30-31: 保留位
+    uint32_t event_data;
 } event_data_t;
 
 typedef struct __packed
@@ -106,17 +92,19 @@ typedef struct __packed
     uint8_t count;
 } referee_warning_t;
 
-/* 0x0105 飞镖发射相关数据 */
 typedef struct __packed
 {
     uint8_t dart_remaining_time;
-    uint16_t dart_hit_target : 3;       // bit 0-2: 最近一次己方飞镖击中的目标
-    uint16_t dart_hit_count : 3;        // bit 3-5: 对方最近被击中的目标累计被击中计次数
-    uint16_t dart_selected_target : 3;  // bit 6-8: 飞镖此时选定的击打目标
-    uint16_t reserved : 7;              // bit 9-15: 保留位
+    uint16_t dart_info;
+    struct
+    {
+        uint16_t dart_hit_target;       // bit 0-2: 最近一次己方飞镖击中的目标
+        uint16_t dart_hit_count;        // bit 3-5: 对方最近被击中的目标累计被击中计次数
+        uint16_t dart_selected_target;  // bit 6-8: 飞镖此时选定的击打目标
+        uint16_t reserved;       
+    } dart_info_bits;
 } dart_info_t;
 
-/* 0x0201 机器人性能体系数据 */
 typedef struct __packed
 {
     uint8_t robot_id;
@@ -129,7 +117,6 @@ typedef struct __packed
     uint8_t power_management_gimbal_output : 1;
     uint8_t power_management_chassis_output : 1;
     uint8_t power_management_shooter_output : 1;
-    uint8_t reserved_power_management : 5;       // 补齐一个字节，防止错位
 } robot_status_t;
 
 typedef struct __packed
@@ -149,7 +136,6 @@ typedef struct __packed
     float angle;
 } robot_pos_t;
 
-/* 0x0204 机器人增益和底盘能量数据 */
 typedef struct __packed
 {
     uint8_t recovery_buff;
@@ -157,14 +143,7 @@ typedef struct __packed
     uint8_t defence_buff;
     uint8_t vulnerability_buff;
     uint16_t attack_buff;
-    uint8_t energy_125 : 1;              // bit 0: >=125%
-    uint8_t energy_100 : 1;              // bit 1: >=100%
-    uint8_t energy_50 : 1;               // bit 2: >=50%
-    uint8_t energy_30 : 1;               // bit 3: >=30%
-    uint8_t energy_15 : 1;               // bit 4: >=15%
-    uint8_t energy_5 : 1;                // bit 5: >=5%
-    uint8_t energy_1 : 1;                // bit 6: >=1%
-    uint8_t energy_reserved : 1;         // bit 7: 保留位
+    uint8_t remaining_energy;
 } buff_t;
 
 typedef struct __packed
@@ -173,13 +152,9 @@ typedef struct __packed
     uint8_t HP_deduction_reason : 4;
 } hurt_data_t;
 
-/* 0x0207 实时射击数据 */
 typedef struct __packed
 {
-    uint8_t reserved_1 : 1;              // bit 0: 保留位
-    uint8_t bullet_type_17mm : 1;        // bit 1: 17mm 弹丸
-    uint8_t bullet_type_42mm : 1;        // bit 2: 42mm 弹丸
-    uint8_t reserved_2 : 5;              // bit 3-7: 保留位
+    uint8_t bullet_type;
     uint8_t shooter_number;
     uint8_t launching_frequency;
     float initial_speed;
@@ -193,51 +168,10 @@ typedef struct __packed
     uint16_t projectile_allowance_fortress;
 } projectile_allowance_t;
 
-/* 0x0209 机器人 RFID 模块状态 */
 typedef struct __packed
 {
-    // 32-bit (uint32_t rfid_status 展开)
-    uint32_t ally_base : 1;
-    uint32_t ally_central_highland : 1;
-    uint32_t enemy_central_highland : 1;
-    uint32_t ally_trapezoidal_highland : 1;
-    uint32_t enemy_trapezoidal_highland : 1;
-    uint32_t ally_fly_ramp_front : 1;
-    uint32_t ally_fly_ramp_back : 1;
-    uint32_t enemy_fly_ramp_front : 1;
-    uint32_t enemy_fly_ramp_back : 1;
-    uint32_t ally_central_highland_lower : 1;
-    uint32_t ally_central_highland_upper : 1;
-    uint32_t enemy_central_highland_lower : 1;
-    uint32_t enemy_central_highland_upper : 1;
-    uint32_t ally_highway_lower : 1;
-    uint32_t ally_highway_upper : 1;
-    uint32_t enemy_highway_lower : 1;
-    uint32_t enemy_highway_upper : 1;
-    uint32_t ally_fortress : 1;
-    uint32_t ally_outpost : 1;
-    uint32_t ally_supply_zone_not_overlapping : 1;
-    uint32_t ally_supply_zone_overlapping : 1;
-    uint32_t ally_assembly_zone : 1;
-    uint32_t enemy_assembly_zone : 1;
-    uint32_t center_buff_zone : 1;
-    uint32_t enemy_fortress : 1;
-    uint32_t enemy_outpost : 1;
-    uint32_t ally_tunnel_highway_lower : 1;
-    uint32_t ally_tunnel_highway_middle : 1;
-    uint32_t ally_tunnel_highway_upper : 1;
-    uint32_t ally_tunnel_trapezoidal_lower : 1;
-    uint32_t ally_tunnel_trapezoidal_middle : 1;
-    uint32_t ally_tunnel_trapezoidal_upper : 1;
-
-    // 8-bit (uint8_t rfid_status_2 展开)
-    uint8_t enemy_tunnel_highway_lower : 1;
-    uint8_t enemy_tunnel_highway_middle : 1;
-    uint8_t enemy_tunnel_highway_upper : 1;
-    uint8_t enemy_tunnel_trapezoidal_lower : 1;
-    uint8_t enemy_tunnel_trapezoidal_middle : 1;
-    uint8_t enemy_tunnel_trapezoidal_upper : 1;
-    uint8_t reserved_tunnel : 2;
+    uint32_t rfid_status;
+    uint8_t rfid_status_2;
 } rfid_status_t;
 
 typedef struct __packed
@@ -262,52 +196,20 @@ typedef struct __packed
     float reserved_2;
 } ground_robot_position_t;
 
-/* 0x020C 雷达标记进度数据 */
 typedef struct __packed
 {
-    uint16_t enemy_hero_mark : 1;          // bit 0
-    uint16_t enemy_engineer_mark : 1;      // bit 1
-    uint16_t enemy_infantry_3_mark : 1;    // bit 2
-    uint16_t enemy_infantry_4_mark : 1;    // bit 3
-    uint16_t enemy_aerial_mark : 1;        // bit 4
-    uint16_t enemy_sentry_mark : 1;        // bit 5
-    uint16_t ally_hero_mark : 1;           // bit 6
-    uint16_t ally_engineer_mark : 1;       // bit 7
-    uint16_t ally_infantry_3_mark : 1;     // bit 8
-    uint16_t ally_infantry_4_mark : 1;     // bit 9
-    uint16_t ally_aerial_mark : 1;         // bit 10
-    uint16_t ally_sentry_mark : 1;         // bit 11
-    uint16_t reserved : 4;                 // bit 12-15
+    uint16_t mark_progress;
 } radar_mark_data_t;
 
-/* 0x020D 哨兵自主决策信息同步 */
 typedef struct __packed
 {
-    // uint32_t sentry_info 展开
-    uint32_t sentry_redeemed_projectile_allowance : 11;
-    uint32_t sentry_remote_redeemed_projectile_times : 4;
-    uint32_t sentry_remote_redeemed_HP_times : 4;
-    uint32_t can_confirm_free_revive : 1;
-    uint32_t can_redeem_immediate_revive : 1;
-    uint32_t cost_for_immediate_revive : 10;
-    uint32_t reserved_1 : 1;
-
-    // uint16_t sentry_info_2 展开
-    uint16_t is_out_of_combat : 1;
-    uint16_t remaining_redeemable_projectile_allowance : 11;
-    uint16_t sentry_posture : 2;
-    uint16_t can_enter_activating_state : 1;
-    uint16_t reserved_2 : 1;
+    uint32_t sentry_info;
+    uint16_t sentry_info_2;
 } sentry_info_t;
 
-/* 0x020E 雷达自主决策信息同步 */
 typedef struct __packed
 {
-    uint8_t radar_double_damage_chance : 2;   // bit 0-1
-    uint8_t enemy_is_double_damaged : 1;      // bit 2
-    uint8_t ally_encryption_level : 2;        // bit 3-4
-    uint8_t can_modify_password : 1;          // bit 5
-    uint8_t reserved : 2;                     // bit 6-7
+    uint8_t radar_info;
 } radar_info_t;
 
 typedef struct __packed
@@ -318,7 +220,7 @@ typedef struct __packed
     uint8_t user_data[112];
 } robot_interaction_data_t;
 
-/* 图形结构 (您原本的代码已经是正确的位域，此处保留) */
+/* 图形结构 */
 typedef struct __packed
 {
     uint8_t figure_name[3];
@@ -355,23 +257,14 @@ typedef struct __packed
     uint16_t cmd_source;
 } map_command_t;
 
-/* 0x0120 哨兵自主决策指令 */
 typedef struct __packed
 {
-    uint32_t confirm_resurrection : 1;                      // bit 0
-    uint32_t confirm_immediate_resurrection : 1;            // bit 1
-    uint32_t redeem_projectile_allowance : 11;              // bit 2-12
-    uint32_t remote_redeem_projectile_request_times : 4;    // bit 13-16
-    uint32_t remote_redeem_HP_request_times : 4;            // bit 17-20
-    uint32_t sentry_posture_cmd : 2;                        // bit 21-22
-    uint32_t confirm_activate_energy_mechanism : 1;         // bit 23
-    uint32_t reserved : 8;                                  // bit 24-31
+    uint32_t sentry_cmd;
 } sentry_cmd_t;
 
-/* 0x0121 雷达自主决策指令 */
 typedef struct __packed
 {
-    uint8_t radar_double_damage_cmd;
+    uint8_t radar_cmd;
     uint8_t password_cmd;
     uint8_t password_1;
     uint8_t password_2;
@@ -414,7 +307,6 @@ typedef struct __packed
     uint8_t user_data[30];
 } custom_info_t;
 
-/* 0x0306 自定义控制器键鼠操作 */
 typedef struct __packed
 {
     uint16_t key_value;
@@ -482,13 +374,9 @@ typedef union
 
 } ALL_RX_Data_T;
 
-extern uint8_t Referee_Rx_Buf[2][REFEREE_RXFRAME_LENGTH];
+extern uint8_t Referee_Rx_Buf[REFEREE_RXFRAME_LENGTH];
 extern User_Data_T User_data;
 
 void Referee_System_Frame_Update(uint8_t *Buff, uint16_t Size);
-
-void Referee_Send_KeyMouse(custom_client_data_t *control_data);
-
-void Referee_Send_Data(uint16_t cmd_id, uint8_t *p_data, uint16_t len);
 
 #endif

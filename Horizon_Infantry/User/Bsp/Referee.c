@@ -76,7 +76,11 @@ static void Referee_System_Info_Update(uint16_t cmd_id, uint8_t *data_ptr, User_
             break;
 
         case Dart_fire:
-            memcpy(&usr_data->dart_info, data_ptr, sizeof(dart_info_t));
+            memcpy(&usr_data->dart_info, data_ptr, 3);
+            usr_data->dart_info.dart_info_bits.dart_hit_target = (usr_data->dart_info.dart_info >> 0) & 0x07;
+            usr_data->dart_info.dart_info_bits.dart_hit_count = (usr_data->dart_info.dart_info >> 3) & 0x07;
+            usr_data->dart_info.dart_info_bits.dart_selected_target = (usr_data->dart_info.dart_info >> 6) & 0x07;
+            usr_data->dart_info.dart_info_bits.reserved = (usr_data->dart_info.dart_info >> 9) & 0x7F;
             break;
 
         case Robot_performan:

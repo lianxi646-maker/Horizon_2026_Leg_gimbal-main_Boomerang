@@ -58,3 +58,10 @@ void Dart_Grab_Action()
     ServoMoveMulti(2, ids, angles3, time_ms);
     osDelay(1000);
 }
+
+void Dart_put()
+{
+    HAL_GPIO_WritePin(GPIOC ,GPIO_PIN_6 ,GPIO_PIN_SET);//电磁铁下磁
+	osDelay(200);
+	HAL_GPIO_WritePin(GPIOC ,GPIO_PIN_6 ,GPIO_PIN_RESET);//电磁铁重新上磁
+}

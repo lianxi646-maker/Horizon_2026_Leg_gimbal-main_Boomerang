@@ -10,15 +10,6 @@
 #include "mymath.h"
 #include "arm.h"
 
-void Dart_Trigger_Fire(void)
-{
-    // 打开扳机
-    __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, Angle_To_CCR(Servo_996R_angle_open));
-    osDelay(500);
-
-    // 关闭扳机（完成一次发射）
-    __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, Angle_To_CCR(Servo_996R_angle_close));
-}
 
 
 //适用于原始换弹的飞镖全自动流程（舵机角度与原始换弹共用，试用前需查看更改）

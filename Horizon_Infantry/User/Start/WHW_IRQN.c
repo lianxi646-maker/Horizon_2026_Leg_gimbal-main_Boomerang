@@ -149,12 +149,12 @@ void StartIMUTask(void const * argument)
     {
         RUI_V_CONTAL.DWT_TIME.IMU_Dtime = DWT_GetDeltaT(&RUI_V_CONTAL.DWT_TIME.IMU_DWT_Count);
 
-        Arm_Action_Sequence(2750.0f);
-        Arm_Action_Sequence(3350.0f);
-        Arm_Action_Sequence(4067.0f);
-        Arm_Action_Sequence(3350.0f);
-        Arm_Action_Sequence(4621.0f);
-        Arm_Action_Sequence(3350.0f);
+        // Arm_Action_Sequence(2750.0f);
+        // Arm_Action_Sequence(3350.0f);
+        // Arm_Action_Sequence(4067.0f);
+        // Arm_Action_Sequence(3350.0f);
+        // Arm_Action_Sequence(4621.0f);
+        // Arm_Action_Sequence(3350.0f);
 
 
         osDelay(1);

@@ -11,9 +11,9 @@
 
 uint8_t pin_switch_down=0, pin_switch_up=0,pin_switch_power=0;
 	uint8_t ids[] = {1, 2};          // 舵机ID列表
-	uint16_t angles[] = {50, 700}; // 初始(吸附)
-	uint16_t angles2[] = {30, 625};//取下
-	uint16_t angles3[] = {500, 580};	// 等待
+	uint16_t angles[] = {140, 700}; // 初始(吸附)
+	uint16_t angles2[] = {400, 550};//取下
+	uint16_t angles3[] = {900, 460};	// 等待
 	uint16_t angles4[] = {730, 600};	// 等待位置
 	uint16_t angles5[] = {500, 650};
 	uint16_t angles6[] = {500,630};
@@ -40,8 +40,8 @@ uint8_t pin_switch_down=0, pin_switch_up=0,pin_switch_power=0;
 	uint8_t state_launch = 0;
 	uint8_t state_power = 0;
 	uint8_t state_power_mid_turn = 0;
-	uint8_t Servo_996R_angle_close = 50;
-	uint8_t Servo_996R_angle_open = 110;
+	uint8_t Servo_996R_angle_close = 60;
+	uint8_t Servo_996R_angle_open = 180;
 	//uint8_t  load = 1;
 	//uint8_t state_now = 5;
 
@@ -60,7 +60,7 @@ void Control(uint8_t mod)
 			Control_Referee( &User_data);
 			break;
 		case 3://初始（遥控器拨盘位于中间）测试模式
-			Control_test(DJI_6020_turn_test);
+			Control_test(turn_test2);
 			break;
 		case 2://手动模式射击		
 			ALL_MOTOR.DJI_2006_Trigger.DATA.Aim -= WHW_V_DBUS.Remote.CH3_int16 * 0.4f;
@@ -99,12 +99,12 @@ void Control_Referee( User_Data_T* User_data)
 	//检测飞镖闸门状态
 	switch(open_cnt)
 	{
-		case 1:
+		case 2:
 			state_launch = 1;
 			ControlServo(state_launch, User_data);
 			state_launch = 2;
 			break;
-		case 2:
+		case 3:
 			ControlServo(state_launch, User_data);
 			// open_cnt = 0;
 			break;
@@ -345,7 +345,6 @@ void ControlServo(uint8_t mod, User_Data_T* User_data)
 									ALL_MOTOR.DJI_3508_Pull.DATA.Aim =0;
 									osDelay(300);
 									Dart_Trigger_Fire();//发射
-									Arm_Action_Sequence(2829.0f);//装填第二发
 									second = 1;
 									first=0;
 									break;
@@ -366,7 +365,7 @@ void ControlServo(uint8_t mod, User_Data_T* User_data)
 						case 0:
 							osDelay(25);
 							//第二发装填完成
-							Dart_put();//放下第二发镖
+							//Dart_put();//放下第二发镖
 							switch(pin_switch_up)
 							{
 								case 1:
@@ -374,10 +373,10 @@ void ControlServo(uint8_t mod, User_Data_T* User_data)
 									break;
 								case 0:
 									ALL_MOTOR.DJI_3508_Pull.DATA.Aim =0;
-									
+										Dart_put();//放下第二发镖
 										osDelay(300);
 										Dart_Trigger_Fire();//发射
-										Arm_Action_Sequence(4067.0f);//装填第三发
+										Arm_Action_Sequence(2829.0f);//装填第三发
 										second =0;
 										third = 1;
 									break;
@@ -400,7 +399,7 @@ void ControlServo(uint8_t mod, User_Data_T* User_data)
 						case 0:
 							osDelay(25);
 							//第三发装填完成
-							Dart_put();//放下第三发镖
+							//Dart_put();//放下第三发镖
 							switch(pin_switch_up)
 							{
 								case 1:
@@ -408,9 +407,10 @@ void ControlServo(uint8_t mod, User_Data_T* User_data)
 									break;
 								case 0:
 									ALL_MOTOR.DJI_3508_Pull.DATA.Aim =0;
+										Dart_put();//放下第三发镖
 										osDelay(300);
 										Dart_Trigger_Fire();//发射
-										Arm_Action_Sequence(4621.0f);//装填第四发
+										Arm_Action_Sequence(4067.0f);//装填第四发
 										third = 0;
 										forth = 1;
 									break;
@@ -430,14 +430,15 @@ void ControlServo(uint8_t mod, User_Data_T* User_data)
 						case 0:
 							osDelay(25);
 							//第四发装填完成
-							Dart_put();//放下第四发镖
+							//Dart_put();//放下第四发镖
 							switch(pin_switch_up){
 								case 1:
 									ALL_MOTOR.DJI_3508_Pull.DATA.Aim =7000.0;
 									break;
 								case 0:
 									ALL_MOTOR.DJI_3508_Pull.DATA.Aim =0;
-										osDelay(300);
+									Dart_put();//放下第四发镖
+									osDelay(300);
 									Dart_Trigger_Fire();//发射
 									open_cnt = 0;
 									break;
@@ -527,7 +528,7 @@ void Control_test(uint8_t mod)
 								ALL_MOTOR.DJI_3508_Pull.DATA.Aim =0;
 								osDelay(300);
 								Dart_Trigger_Fire();//发射
-								Arm_Action_Sequence(2829.0f);//装填第二发
+								Arm_Action_Sequence(2829.0f);//装填第三发
 								second = 1;
 								first=0;
 								break;
@@ -558,7 +559,7 @@ void Control_test(uint8_t mod)
 									ALL_MOTOR.DJI_3508_Pull.DATA.Aim =0;
 										osDelay(300);
 										Dart_Trigger_Fire();//发射
-										Arm_Action_Sequence(4067.0f);//装填第三发
+										Arm_Action_Sequence(4067.0f);//装填第四发
 										second =0;
 										third = 1;
 									break;
@@ -666,29 +667,12 @@ void Control_test(uint8_t mod)
 			}
 			break;
 		case 5://测试扳机扣下角度
-			__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, Angle_To_CCR(Servo_996R_angle_close));
-			osDelay(500);
-			__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, Angle_To_CCR(Servo_996R_angle_open));
-			osDelay(500);
+			Dart_Trigger_Fire();
 			// __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, Angle_To_CCR(Servo_996R_angle_close));
 			break;
 		case 6://测试第二发换弹流程与时间
-			//将机械臂移动到第二发镖的等待位置
-			// ALL_MOTOR.DJI_6020_turn.DATA.Aim = 3000;
-			// osDelay(500);
-			//吸取飞镖
-			ALL_MOTOR.DJI_6020_turn.DATA.Aim = a;
-			osDelay(500);
-			// ServoMoveMulti(2, ids, angles, time_ms);
-			// osDelay(1000);
-			ServoMoveMulti(2, ids, angles2, time_ms);
-			osDelay(1000);
-			// ServoMoveMulti(2, ids, angles3, time_ms);
-			// osDelay(1000);
-			// //机械臂回到待装填位置
-			// ALL_MOTOR.DJI_6020_turn.DATA.Aim = 4000;
-			// osDelay(500);
-			// ServoMoveMulti(2, ids, angles4, time_ms);
+			Arm_Action_Sequence(2829.0f);
+			Dart_put();
 			break;
 		case 7://测试第三发换弹流程与时间
 			//将机械臂移到第三发镖等待位置
@@ -749,6 +733,7 @@ void Dart_Trigger_Fire(void)
 
     // 关闭扳机（完成一次发射）
     __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, Angle_To_CCR(Servo_996R_angle_close));
+	osDelay(500);
 }
 
 

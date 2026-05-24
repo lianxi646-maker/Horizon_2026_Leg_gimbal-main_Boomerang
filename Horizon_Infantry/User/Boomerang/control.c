@@ -418,6 +418,7 @@ void ControlServo(uint8_t mod, User_Data_T* User_data)
 									ALL_MOTOR.DJI_3508_Pull.DATA.Aim =7000.0;
 									break;
 								case 0:
+									ALL_MOTOR.DJI_3508_Pull.DATA.Aim =0;
 									if((*(User_data)).dart_info.dart_remaining_time <= 2){
 
 									}else{
@@ -465,7 +466,6 @@ void ControlServo(uint8_t mod, User_Data_T* User_data)
 						default:
 							break;
 					}
-					forth = 0;
 				}
 				break;
 			default:
@@ -521,7 +521,43 @@ void Control_test(uint8_t mod)
 	switch(mod)
 	{
 		case 1://测试，确定机械臂转动到镖的等待位置的编码器值
-			Motor_TurnTo_Angle(3435.0f);
+			if(first==1){
+				//电磁铁上磁
+				HAL_GPIO_WritePin(GPIOC ,GPIO_PIN_6 ,GPIO_PIN_RESET);
+				
+				//初始化舵机位置
+				//ServoMoveMulti(3, ids, angles, time_ms);
+				//初始化yaw位置
+				ALL_MOTOR.DJI_6020_turn.DATA.Aim = 3435;
+				__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, Angle_To_CCR(Servo_996R_angle_close));
+				switch(pin_switch_down)
+				{
+					case 1:
+						ALL_MOTOR.DJI_3508_Pull.DATA.Aim =-2500.0;
+						break;
+					case 0:
+						switch(pin_switch_up)
+						{
+							case 1:
+								ALL_MOTOR.DJI_3508_Pull.DATA.Aim =7000.0;
+								break;
+							case 0:
+								ALL_MOTOR.DJI_3508_Pull.DATA.Aim =0;
+								osDelay(300);
+								Dart_Trigger_Fire();//发射
+								Arm_Action_Sequence(2829.0f);//装填第二发
+								second = 1;
+								first=0;
+								break;
+							default:
+								break;
+							}
+						break;
+					default:
+						break;
+				}
+				}
+				if(second ==1){
 					switch(pin_switch_down)
 					{
 						case 1:
@@ -551,7 +587,64 @@ void Control_test(uint8_t mod)
 						default:
 							break;
 					}
-			
+				}
+				if(third == 1){
+					switch(pin_switch_down)
+					{
+						case 1:
+							ALL_MOTOR.DJI_3508_Pull.DATA.Aim =-2500.0;
+							break;
+						case 0:
+							osDelay(25);
+							//第三发装填完成
+							Dart_put();//放下第三发镖
+							switch(pin_switch_up)
+							{
+								case 1:
+									ALL_MOTOR.DJI_3508_Pull.DATA.Aim =7000.0;
+									break;
+								case 0:
+										ALL_MOTOR.DJI_3508_Pull.DATA.Aim =0;
+										osDelay(300);
+										Dart_Trigger_Fire();//发射
+										Arm_Action_Sequence(4621.0f);//装填第四发
+										third = 0;
+										forth = 1;
+									break;
+								default:
+									break;
+								}
+							break;
+						default:
+							break;
+					}
+				}
+				if(forth ==1){
+					switch(pin_switch_down){
+						case 1:
+							ALL_MOTOR.DJI_3508_Pull.DATA.Aim =-2500.0;
+							break;
+						case 0:
+							osDelay(25);
+							//第四发装填完成
+							Dart_put();//放下第四发镖
+							switch(pin_switch_up){
+								case 1:
+									ALL_MOTOR.DJI_3508_Pull.DATA.Aim =7000.0;
+									break;
+								case 0:
+									ALL_MOTOR.DJI_3508_Pull.DATA.Aim =0;
+										osDelay(300);
+									Dart_Trigger_Fire();//发射
+									break;
+								default:
+									break;
+							}
+							break;
+						default:
+							break;
+					}
+				}
 			break;
 		case 2://测试，确定发射力度标到基地与前哨的编码器值
 			switch(pin_switch_power)

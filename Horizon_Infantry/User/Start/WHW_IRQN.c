@@ -86,9 +86,6 @@ void StartRobotUITask(void const * argument)
     for (;;)
      {
         RUI_V_CONTAL.DWT_TIME.RobotUI_Dtime = DWT_GetDeltaT(&RUI_V_CONTAL.DWT_TIME.RobotUI_DWT_Count);
-        pin_switch_down = HAL_GPIO_ReadPin(GPIOF, GPIO_PIN_0);
-        pin_switch_up = HAL_GPIO_ReadPin(GPIOE, GPIO_PIN_14);
-        pin_switch_power = HAL_GPIO_ReadPin(GPIOI, GPIO_PIN_6);
              Control(WHW_V_DBUS.Remote.S1_u8);
 					// ALL_MOTOR.DJI_6020_turn.DATA.Aim = 0;
         osDelay(2);
@@ -148,7 +145,9 @@ void StartIMUTask(void const * argument)
     for(;;)
     {
         RUI_V_CONTAL.DWT_TIME.IMU_Dtime = DWT_GetDeltaT(&RUI_V_CONTAL.DWT_TIME.IMU_DWT_Count);
-
+        pin_switch_down = HAL_GPIO_ReadPin(GPIOF, GPIO_PIN_0);
+        pin_switch_up = HAL_GPIO_ReadPin(GPIOE, GPIO_PIN_14);
+        pin_switch_power = HAL_GPIO_ReadPin(GPIOI, GPIO_PIN_6);
         // Arm_Action_Sequence(2750.0f);
         // Arm_Action_Sequence(3350.0f);
         // Arm_Action_Sequence(4067.0f);

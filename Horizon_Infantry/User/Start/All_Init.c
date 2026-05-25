@@ -122,13 +122,7 @@ void Everying_Init(void)
 
     MOTOR_PID_Gimbal_INIT(&ALL_MOTOR);
     //
-    MOTOR_PID_Boomerang_INIT(&ALL_MOTOR);
     
-    //扳机舵机PWM初始化
-    HAL_TIM_PWM_Start(&htim1,TIM_CHANNEL_1);
-    HAL_TIM_PWM_Start(&htim1,TIM_CHANNEL_2);
-    //电磁铁初始上磁
-    HAL_GPIO_WritePin(GPIOC ,GPIO_PIN_6 ,GPIO_PIN_RESET);
 }
 
 void StartDefaultTask(void const * argument)

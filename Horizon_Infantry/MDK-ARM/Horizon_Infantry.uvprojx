@@ -795,14 +795,14 @@
               <FilePath>..\User\Start\All_Init.c</FilePath>
             </File>
             <File>
-              <FileName>All_Init.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\User\Start\Inc\All_Init.h</FilePath>
-            </File>
-            <File>
               <FileName>MY_Define.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\User\Start\Inc\MY_Define.h</FilePath>
+            </File>
+            <File>
+              <FileName>All_Init.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\User\Start\Inc\All_Init.h</FilePath>
             </File>
             <File>
               <FileName>WHW_IRQN.c</FileName>

@@ -82,7 +82,11 @@ void StartRobotUITask(void const * argument)
 {
     portTickType currentTimeRobotUI;
     currentTimeRobotUI = xTaskGetTickCount();
-
+    
+    //扳机舵机PWM初始化
+    HAL_TIM_PWM_Start(&htim1,TIM_CHANNEL_1);
+    //电磁铁初始上磁
+    HAL_GPIO_WritePin(GPIOC ,GPIO_PIN_6 ,GPIO_PIN_RESET);
     for (;;)
      {
         RUI_V_CONTAL.DWT_TIME.RobotUI_Dtime = DWT_GetDeltaT(&RUI_V_CONTAL.DWT_TIME.RobotUI_DWT_Count);
@@ -105,11 +109,9 @@ void StartMoveTask(void const * argument)
         {
             case 0:
                 //离线
-                ALL_MOTOR.DJI_2006_Yaw.DATA.Aim = VisionRxData.Data.x0;
                 break;
             case 1:
                 //在线
-//                Vision_Tx_Data(User_data.dart_info.dart_info_bits.dart_selected_target);
                 ALL_MOTOR.DJI_2006_Yaw.DATA.Aim = 0;
                 break;
             case 2:
@@ -118,6 +120,9 @@ void StartMoveTask(void const * argument)
             default:
                 break;
         }
+        Vision_Tx_Data(User_data.dart_info.dart_info_bits.dart_selected_target);
+        //VOFA_justfloat(0,0,0,0,0,0,0,0,0,1.0);
+
         osDelay(2);
     }
 }
@@ -127,10 +132,10 @@ void StartDefiantTask(void const * argument)
 {
     portTickType currentTimeDefiant;
     currentTimeDefiant = xTaskGetTickCount();
+    MOTOR_PID_Boomerang_INIT(&ALL_MOTOR);
 
     for(;;)
     {
-        ALL_MOTOR.DJI_2006_Yaw.DATA.Aim=DJI_2006_trigger_angle_init;
         Boomerang_task();
         osDelay(2);
     }
@@ -149,7 +154,7 @@ void StartIMUTask(void const * argument)
         pin_switch_down = HAL_GPIO_ReadPin(GPIOF, GPIO_PIN_0);
         pin_switch_up = HAL_GPIO_ReadPin(GPIOE, GPIO_PIN_14);
         pin_switch_power = HAL_GPIO_ReadPin(GPIOI, GPIO_PIN_6);
-        
+
         // Arm_Action_Sequence(2750.0f);
         // Arm_Action_Sequence(3350.0f);
         // Arm_Action_Sequence(4067.0f);
@@ -226,6 +231,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef* hcan)
 				// root_t.motorRoot.feedAmmoDTime = 0;
                 RUI_F_MOTOR_CAN_RX_3508RM(&ALL_MOTOR.DJI_3508_Pull.DATA, rx_data);
 				memcpy(test, rx_data, 8);
+                break;
 			case 0x202://扳机
                 RUI_F_MOTOR_CAN_RX_2006RM(&ALL_MOTOR.DJI_2006_Trigger.DATA, rx_data);
 				memcpy(test, rx_data, 8);

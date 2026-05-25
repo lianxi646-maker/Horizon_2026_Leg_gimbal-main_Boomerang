@@ -60,16 +60,16 @@ void Control(uint8_t mod)
 			Control_Referee( &User_data);
 			break;
 		case 3://初始（遥控器拨盘位于中间）测试模式
-			Control_test(turn_test2);
+			//Control_test(turn_test2);
 			break;
 		case 2://手动模式射击		
 			ALL_MOTOR.DJI_2006_Trigger.DATA.Aim -= WHW_V_DBUS.Remote.CH3_int16 * 0.4f;
-			ALL_MOTOR.DJI_2006_Yaw.DATA.Aim -= WHW_V_DBUS.Remote.CH2_int16 * 0.5;
-			ALL_MOTOR.DJI_3508_Pull.DATA.Aim += WHW_V_DBUS.Remote.CH1_int16 * 0.5f;
+			//ALL_MOTOR.DJI_2006_Yaw.DATA.Aim -= WHW_V_DBUS.Remote.CH2_int16 * 0.5;
+			ALL_MOTOR.DJI_3508_Pull.DATA.Aim = WHW_V_DBUS.Remote.CH1_int16 * 2.0f;
 			break;
 		default://清空
 			ALL_MOTOR.DJI_2006_Trigger.DATA.Aim = ALL_MOTOR.DJI_2006_Trigger.DATA.Angle_Infinite;
-			ALL_MOTOR.DJI_2006_Yaw.DATA.Aim = ALL_MOTOR.DJI_2006_Yaw.DATA.Angle_Infinite;
+			//ALL_MOTOR.DJI_2006_Yaw.DATA.Aim = ALL_MOTOR.DJI_2006_Yaw.DATA.Angle_Infinite;
 			ALL_MOTOR.DJI_3508_Pull.DATA.Aim = ALL_MOTOR.DJI_3508_Pull.DATA.Angle_Infinite;
 			break;	
 	}
@@ -672,7 +672,6 @@ void Control_test(uint8_t mod)
 			break;
 		case 6://测试第二发换弹流程与时间
 			Arm_Action_Sequence(2829.0f);
-			Dart_put();
 			break;
 		case 7://测试第三发换弹流程与时间
 			//将机械臂移到第三发镖等待位置

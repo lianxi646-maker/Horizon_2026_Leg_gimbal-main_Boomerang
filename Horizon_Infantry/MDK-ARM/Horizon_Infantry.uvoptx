@@ -330,6 +330,11 @@
           <WinNumber>1</WinNumber>
           <ItemText>angles3,0x0A</ItemText>
         </Ww>
+        <Ww>
+          <count>35</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>aaaa,0x0A</ItemText>
+        </Ww>
       </WatchWindow1>
       <WatchWindow2>
         <Ww>
@@ -1385,8 +1390,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\User\Start\Inc\All_Init.h</PathWithFileName>
-      <FilenameWithoutPath>All_Init.h</FilenameWithoutPath>
+      <PathWithFileName>..\User\Start\Inc\MY_Define.h</PathWithFileName>
+      <FilenameWithoutPath>MY_Define.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -1397,8 +1402,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\User\Start\Inc\MY_Define.h</PathWithFileName>
-      <FilenameWithoutPath>MY_Define.h</FilenameWithoutPath>
+      <PathWithFileName>..\User\Start\Inc\All_Init.h</PathWithFileName>
+      <FilenameWithoutPath>All_Init.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>

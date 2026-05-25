@@ -37,7 +37,7 @@ void Vision_Rx_Data(uint8_t* buffer, VisionRxDataUnion *VisionRx)
 
     Union_temp.Data[1] = buffer[i++];
     Union_temp.Data[0] = buffer[i++];
-    VisionRx->Data.x0 = Union_temp.Data_u16-640;
+    VisionRx->Data.x0 = Union_temp.Data_u16-640 + 188;
     VisionRx->Data.OffCounter = 0;
 }
 
@@ -75,8 +75,10 @@ uint8_t vision_offline()
    
     else
     {
+			  if (VisionRxData.Data.x1 == 0 && VisionRxData.Data.x2 == 0) return 0;
         return 1; // 在线
     }
+		
     return 2; 
     
 }

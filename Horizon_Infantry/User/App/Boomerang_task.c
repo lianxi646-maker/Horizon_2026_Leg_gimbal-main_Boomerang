@@ -46,14 +46,14 @@ void Boomerang_task()
 		ALL_MOTOR.DJI_6020_turn.PID_S.out = 0;
 
     /*CAN发送*/
-	if (VisionRxData.Data.isOnline == 1){
+	if (VisionRxData.Data.isOnline == 0) ALL_MOTOR.DJI_2006_Yaw.PID_S.out = 0;
+	
 	DJI_Current_Ctrl(&hcan1,
                      0x1FF,
                      0,
                      (int16_t)ALL_MOTOR.DJI_2006_Yaw.PID_S.out,
                      0,
 					 0);
-	}
 	DJI_Current_Ctrl(&hcan1,
                      0x200,
                      (int16_t)ALL_MOTOR.DJI_3508_Pull.PID_S.out,

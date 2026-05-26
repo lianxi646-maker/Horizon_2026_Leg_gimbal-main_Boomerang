@@ -47,6 +47,7 @@ void Boomerang_task()
 
     /*CAN发送*/
 	if (VisionRxData.Data.isOnline == 0) ALL_MOTOR.DJI_2006_Yaw.PID_S.out = 0;
+	if (WHW_V_DBUS.Remote.S1_u8 == 2) ALL_MOTOR.DJI_2006_Trigger.PID_S.out = 0;
 	
 	DJI_Current_Ctrl(&hcan1,
                      0x1FF,

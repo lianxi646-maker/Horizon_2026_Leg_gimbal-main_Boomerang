@@ -327,7 +327,7 @@ void ControlServo(uint8_t mod, User_Data_T* User_data)
 					
 					//初始化舵机位置
 					//ServoMoveMulti(3, ids, angles, time_ms);
-					//初始化yaw位置
+					//初始化换弹yaw轴位置
 					ALL_MOTOR.DJI_6020_turn.DATA.Aim = 3435;
 					__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, Angle_To_CCR(Servo_996R_angle_close));
 					switch(pin_switch_down)
@@ -387,10 +387,6 @@ void ControlServo(uint8_t mod, User_Data_T* User_data)
 						default:
 							break;
 					}
-				}
-				break;
-			case 2://第三发和第四发
-				if(third == 1){
 					switch(pin_switch_down)
 					{
 						case 1:
@@ -407,12 +403,11 @@ void ControlServo(uint8_t mod, User_Data_T* User_data)
 									break;
 								case 0:
 									ALL_MOTOR.DJI_3508_Pull.DATA.Aim =0;
-										Dart_put();//放下第三发镖
-										osDelay(300);
-										Dart_Trigger_Fire();//发射
-										Arm_Action_Sequence(4067.0f);//装填第四发
-										third = 0;
-										forth = 1;
+									Dart_put();//放下第三发镖
+									osDelay(300);
+									Arm_Action_Sequence(4067.0f);//装填第四发
+									second =0;
+									third = 1;
 									break;
 								default:
 									break;
@@ -422,6 +417,13 @@ void ControlServo(uint8_t mod, User_Data_T* User_data)
 							break;
 					}
 				}
+				break;
+			case 2://第三发和第四发
+				if(third == 1){
+					Dart_Trigger_Fire();//发射
+					third = 0;
+					forth = 1;
+					}
 				if(forth ==1){
 					switch(pin_switch_down){
 						case 1:
@@ -454,7 +456,7 @@ void ControlServo(uint8_t mod, User_Data_T* User_data)
 			default:
 				break;
 		}
-}
+	}
 
 void turn_target(uint8_t mod,User_Data_T User_data,float Aim_base,float Aim_outpost)
 {

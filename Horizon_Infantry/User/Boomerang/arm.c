@@ -5,6 +5,8 @@
 #include "mymath.h"
 #include "serial_servo.h"
 #include "control.h"
+float middle_angle4 = 3435.0f;
+float middle_angle3 = 3460.0f;
 
 void Motor_TurnTo_Angle(float target_angle)
 {
@@ -33,26 +35,28 @@ void Arm_Action_Sequence(float grap_angle)
     Motor_TurnTo_Angle(grap_angle);
 
     // 2️⃣ 执行三段舵机动作
-    ServoMoveMulti(2, ids, angles, time_ms);
-    osDelay(1000);
-
-    ServoMoveMulti(2, ids, angles2, time_ms);
-    osDelay(1000);
-
-    ServoMoveMulti(2, ids, angles3, time_ms);
-    osDelay(1000);
-
+    if(grap_angle == 4092.0f){
+        Dart_Grab_Action_4();
+        Motor_TurnTo_Angle(middle_angle4);
+    }
+    else if(grap_angle == 2829.0f){
+        Dart_Grab_Action_3();
+        Motor_TurnTo_Angle(middle_angle3);
+    }
     // 3️⃣ 最后转到目标位置
-    Motor_TurnTo_Angle(3435.0f);
+    //Motor_TurnTo_Angle(middle_angle);
 }
 
 //飞镖抓取
-void Dart_Grab_Action()
+void Dart_Grab_Action_3()
 {
-    ServoMoveMulti(2, ids, angles, time_ms);
+    ServoMoveMulti(2, ids, angles3, time_ms);
     osDelay(1000);
 
-    ServoMoveMulti(2, ids, angles2, time_ms);
+    ServoMoveMulti(2, ids, angles6, time_ms);
+    osDelay(1000);
+
+    ServoMoveMulti(2, ids, angles7, time_ms);
     osDelay(1000);
 
     ServoMoveMulti(2, ids, angles3, time_ms);
@@ -60,6 +64,24 @@ void Dart_Grab_Action()
 
 
 }
+
+void Dart_Grab_Action_4()
+{
+    ServoMoveMulti(2, ids, angles3, time_ms);
+    osDelay(1000);
+
+    ServoMoveMulti(2, ids, angles4, time_ms);
+    osDelay(1000);
+
+    ServoMoveMulti(2, ids, angles5, time_ms);
+    osDelay(1000);
+
+    ServoMoveMulti(2, ids, angles3, time_ms);
+    osDelay(1000);
+
+
+}
+
 
 void Dart_put()
 {

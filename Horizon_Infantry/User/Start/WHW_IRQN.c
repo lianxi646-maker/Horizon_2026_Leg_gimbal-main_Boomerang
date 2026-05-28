@@ -72,11 +72,14 @@
 #include "mymath.h"
 #include "serial_servo.h"
 #include "arm.h"
+#include "All_Init.h"
 
 uint8_t move_G, move_S, move_C, move_P;
 float t1,t2,dt;
 static uint8_t TX[12] = {0xff,0xf1,0xfd,0x90,0x86,0xa7,0xff,0xf1,0xfd,0x90,0x86,0xa7};
 
+uint8_t start_flag = 0;
+float time_start = 0.0f;
 //发射导轨位置检测及控制模式切换
 void StartRobotUITask(void const * argument)
 {
@@ -86,13 +89,38 @@ void StartRobotUITask(void const * argument)
     //扳机舵机PWM初始化
     HAL_TIM_PWM_Start(&htim1,TIM_CHANNEL_1);
     //电磁铁初始上磁
-    HAL_GPIO_WritePin(GPIOC ,GPIO_PIN_6 ,GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(GPIOC ,GPIO_PIN_6 ,GPIO_PIN_RESET); 
+	RUI_V_CONTAL.DWT_TIME.RobotUI_Dtime = 0;
     for (;;)
      {
-        RUI_V_CONTAL.DWT_TIME.RobotUI_Dtime = DWT_GetDeltaT(&RUI_V_CONTAL.DWT_TIME.RobotUI_DWT_Count);
-             Control(WHW_V_DBUS.Remote.S1_u8);
+        // RUI_V_CONTAL.DWT_TIME.RobotUI_Dtime = DWT_GetDeltaT(&RUI_V_CONTAL.DWT_TIME.RobotUI_DWT_Count);
+        if (User_data.game_status.game_progress == 4 )
+        {
+					  static uint8_t time_init = 0;
+						if (time_init == 0)
+						{
+							time_start = DWT_GetTimeline_s();
+							time_init = 1;
+						}
+            RUI_V_CONTAL.DWT_TIME.RobotUI_Dtime = DWT_GetTimeline_s() - time_start;
+            if(RUI_V_CONTAL.DWT_TIME.RobotUI_Dtime < 375.0f){
+                start_flag = 1;
+            }else{
+                start_flag = 0;
+            }
+        }
+        if (User_data.game_status.game_progress == 5 )
+        {
+            start_flag = 0;
+        }
+        if(start_flag == 1)
+             Control(1); 
+        else if (start_flag == 0)
+             Control(2);
 					// ALL_MOTOR.DJI_6020_turn.DATA.Aim = 0;
-                    
+        // if (User_data.game_status.game_progress == 4 ){
+        //     Control(WHW_V_DBUS.Remote.S1_u8);
+        // }
         osDelay(2);
     }
 }

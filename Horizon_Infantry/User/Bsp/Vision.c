@@ -1,6 +1,7 @@
 #include "Vision.h"
 #include "All_Init.h"
 
+int16_t vision_error = 193;
 
 void Vision_Rx_Data(uint8_t* buffer, VisionRxDataUnion *VisionRx)
 {
@@ -37,7 +38,7 @@ void Vision_Rx_Data(uint8_t* buffer, VisionRxDataUnion *VisionRx)
 
     Union_temp.Data[1] = buffer[i++];
     Union_temp.Data[0] = buffer[i++];
-    VisionRx->Data.x0 = Union_temp.Data_u16-640 + 188;
+    VisionRx->Data.x0 = Union_temp.Data_u16-640 + vision_error;
     VisionRx->Data.OffCounter = 0;
 }
 

@@ -103,7 +103,7 @@ void StartRobotUITask(void const * argument)
 							time_init = 1;
 						}
             RUI_V_CONTAL.DWT_TIME.RobotUI_Dtime = DWT_GetTimeline_s() - time_start;
-            if(RUI_V_CONTAL.DWT_TIME.RobotUI_Dtime < 375.0f){
+            if(RUI_V_CONTAL.DWT_TIME.RobotUI_Dtime < 390.0f){
                 start_flag = 1;
             }else{
                 start_flag = 0;

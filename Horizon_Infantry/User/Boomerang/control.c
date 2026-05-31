@@ -68,7 +68,7 @@ void Control(uint8_t mod)
 			//Control_test(turn_test2);
 			break;
 		case 2://手动模式射击		
-			ALL_MOTOR.DJI_2006_Trigger.DATA.Aim -= WHW_V_DBUS.Remote.CH3_int16 * 0.4f;
+			//ALL_MOTOR.DJI_2006_Trigger.DATA.Aim -= WHW_V_DBUS.Remote.CH3_int16 * 0.4f;
 			//ALL_MOTOR.DJI_2006_Yaw.DATA.Aim -= WHW_V_DBUS.Remote.CH2_int16 * 0.5;
 			ALL_MOTOR.DJI_3508_Pull.DATA.Aim = WHW_V_DBUS.Remote.CH1_int16 * 4.0f;
 			break;

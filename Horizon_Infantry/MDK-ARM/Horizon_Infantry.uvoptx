@@ -140,7 +140,7 @@
         <SetRegEntry>
           <Number>0</Number>
           <Key>DLGUARM</Key>
-          <Name></Name>
+          <Name>(105=-1,-1,-1,-1,0)</Name>
         </SetRegEntry>
         <SetRegEntry>
           <Number>0</Number>
@@ -377,6 +377,16 @@
         </Ww>
         <Ww>
           <count>44</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>start_flag,0x0A</ItemText>
+        </Ww>
+        <Ww>
+          <count>45</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>\\Horizon_Infantry\../User/Boomerang/control.c\pin_switch_down</ItemText>
+        </Ww>
+        <Ww>
+          <count>46</count>
           <WinNumber>1</WinNumber>
           <ItemText>start_flag,0x0A</ItemText>
         </Ww>

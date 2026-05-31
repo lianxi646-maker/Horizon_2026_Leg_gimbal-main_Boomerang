@@ -15,7 +15,7 @@ uint8_t pin_switch_down=0, pin_switch_up=0,pin_switch_power=0;
 
 	uint8_t ids[] = {1, 2};          // 舵机ID列表
 	uint16_t angles[] = {140, 700}; // 放置参数2
-	uint16_t angles2[] = {400, 550};//放置参数1
+	uint16_t angles2[] = {400, 567};//放置参数1
 	uint16_t angles3[] = {905, 460};	// 等待位置
 	uint16_t angles4[] = {120, 700};//第四发镖吸附参数	
 	uint16_t angles5[] = {400, 550};//第四发镖取下参数
@@ -528,20 +528,9 @@ void Control_test(uint8_t mod)
 			Dart_put();
 			break;
 		case 7://测试第三发换弹流程与时间
-			//将机械臂移到第三发镖等待位置
-			ALL_MOTOR.DJI_6020_turn.DATA.Aim = 2000;
-			osDelay(500);
-			//吸取第三发镖
-			ServoMoveMulti(2, ids, angles, time_ms);
-			osDelay(1000);
-			ServoMoveMulti(2, ids, angles2, time_ms);
-			osDelay(1000);
-			ServoMoveMulti(2, ids, angles3, time_ms);
-			osDelay(1000);
-			//机械臂回到待装填位置
-			ALL_MOTOR.DJI_6020_turn.DATA.Aim = 3500;
-			osDelay(500);
-			ServoMoveMulti(2, ids, angles4, time_ms);
+			 //Dart_put();
+			 Arm_Action_Sequence(4092.0f);//装填第三发
+			 Dart_put();
 			break;
 		case 8://测试第四发换弹流程与时间
 			//将机械臂移到第四发镖等待位置

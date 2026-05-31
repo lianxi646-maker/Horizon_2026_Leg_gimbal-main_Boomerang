@@ -57,4 +57,7 @@ extern	uint8_t state_power;
 extern	uint8_t state_power_mid_turn ;
 extern	uint8_t Servo_996R_angle_close ;
 extern	uint8_t Servo_996R_angle_open ;
+
+extern uint8_t open_cnt;
+
 #endif

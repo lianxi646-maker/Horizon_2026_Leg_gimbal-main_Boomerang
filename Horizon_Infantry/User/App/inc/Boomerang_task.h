@@ -7,6 +7,7 @@
 #include "Motors.h"
 #include "ALL_Init.h"
 #include "control.h"
+#include "WHW_IRQN.h"
 
 extern uint32_t DJI_2006_trigger_angle_init;
 

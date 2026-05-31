@@ -96,23 +96,28 @@ void StartRobotUITask(void const * argument)
         // RUI_V_CONTAL.DWT_TIME.RobotUI_Dtime = DWT_GetDeltaT(&RUI_V_CONTAL.DWT_TIME.RobotUI_DWT_Count);
         if (User_data.game_status.game_progress == 4 )
         {
-					  static uint8_t time_init = 0;
-						if (time_init == 0)
-						{
-							time_start = DWT_GetTimeline_s();
-							time_init = 1;
-						}
-            RUI_V_CONTAL.DWT_TIME.RobotUI_Dtime = DWT_GetTimeline_s() - time_start;
-            if(RUI_V_CONTAL.DWT_TIME.RobotUI_Dtime < 390.0f){
-                start_flag = 1;
-            }else{
-                start_flag = 0;
-            }
+					start_flag = 1;
+//					  static uint8_t time_init = 0;
+//						if (time_init == 0)
+//						{
+//							time_start = DWT_GetTimeline_s();
+//							time_init = 1;
+//						}
+//            RUI_V_CONTAL.DWT_TIME.RobotUI_Dtime = DWT_GetTimeline_s() - time_start;
+//            if(RUI_V_CONTAL.DWT_TIME.RobotUI_Dtime < 390.0f){
+//                start_flag = 1;
+//            }else{
+//                start_flag = 0;
+//            }
         }
-        if (User_data.game_status.game_progress == 5 )
+        if (User_data.game_status.game_progress == 5 && open_cnt == 0)
         {
             start_flag = 0;
         }
+//        if (User_data.game_status.game_progress == 5 && open_cnt == 1)
+//        {
+//            start_flag = 0;
+//        }
         if(start_flag == 1)
              Control(1); 
         else if (start_flag == 0)

@@ -5,8 +5,8 @@
 #include "mymath.h"
 #include "serial_servo.h"
 #include "control.h"
-float middle_angle4 = 3435.0f;
-float middle_angle3 = 3460.0f;
+float middle_angle4 = 3404.0f;
+float middle_angle3 = 3450.0f;
 
 void Motor_TurnTo_Angle(float target_angle)
 {

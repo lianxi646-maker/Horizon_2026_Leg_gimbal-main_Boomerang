@@ -64,12 +64,9 @@ void Vision_Tx_Data(uint16_t State)
 
 uint8_t vision_offline()
 {
-    // if (VisionRxData.Data.isOnline == 1)
-    // {
     VisionRxData.Data.OffCounter++;
     if ( VisionRxData.Data.OffCounter > 80)
     {
-         //memset(&VisionRxData.Data, 0, sizeof(VisionRxData.Data));
          VisionRxData.Data.OffCounter = 80;
         return 0; // 离线
     }

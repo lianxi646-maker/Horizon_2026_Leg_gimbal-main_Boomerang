@@ -154,8 +154,6 @@ void StartMoveTask(void const * argument)
                 break;
         }
         Vision_Tx_Data(User_data.dart_info.dart_info_bits.dart_selected_target);
-        //VOFA_justfloat(0,0,0,0,0,0,0,0,0,1.0);
-
         osDelay(2);
     }
 }
@@ -187,15 +185,6 @@ void StartIMUTask(void const * argument)
         pin_switch_down = HAL_GPIO_ReadPin(GPIOF, GPIO_PIN_0);
         pin_switch_up = HAL_GPIO_ReadPin(GPIOE, GPIO_PIN_14);
         pin_switch_power = HAL_GPIO_ReadPin(GPIOI, GPIO_PIN_6);
-
-        // Arm_Action_Sequence(2750.0f);
-        // Arm_Action_Sequence(3350.0f);
-        // Arm_Action_Sequence(4067.0f);
-        // Arm_Action_Sequence(3350.0f);
-        // Arm_Action_Sequence(4621.0f);
-        // Arm_Action_Sequence(3350.0f);
-
-
         osDelay(1);
     }
 }
@@ -273,7 +262,10 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef* hcan)
                 RUI_F_MOTOR_CAN_RX_2006RM(&ALL_MOTOR.DJI_2006_Yaw.DATA, rx_data);
 				memcpy(test, rx_data, 8);
                 break;
-
+           case 0x209://6020_yaw
+                WHW_F_MOTOR_CAN_RX_6020RM(&ALL_MOTOR.DJI_6020_Yaw.DATA, rx_data);
+                memcpy(test, rx_data, 8);
+                break;
 		}
 	}
 }

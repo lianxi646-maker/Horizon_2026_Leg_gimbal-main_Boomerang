@@ -24,6 +24,7 @@ void MOTOR_PID_Boomerang_INIT(MOTOR_Typedef *motor)
 	PID_init(&ALL_MOTOR.DJI_6020_turn.PID_P, PID_POSITION,PID_P_6020_turn, 300, 30);//6020角度环
 	PID_init(&ALL_MOTOR.DJI_6020_turn.PID_S, PID_POSITION,PID_S_6020_turn, 16000, 10);//6020速度环
 
+
 	// DJI_2006_trigger_angle_init=ALL_MOTOR.DJI_2006_Trigger.DATA.Angle_Infinite;
 	ALL_MOTOR.DJI_2006_Trigger.DATA.Aim=ALL_MOTOR.DJI_2006_Trigger.DATA.Angle_Infinite;
 }
